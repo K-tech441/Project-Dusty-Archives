@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Mathlib Index",
+    "description": "Local SQLite index of 430,222 mathlib declarations: search by name fragment, read type signatures and descriptions, and detect declarations that state the same fact under different names."
+  }
+}

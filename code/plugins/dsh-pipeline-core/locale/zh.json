@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "形式化管线核心",
+    "description": "与书无关的一半：注入流程契约，加载并校验 book profile，提供 pipeline_gate（一次跑完指针/判据/双向覆盖的收口三连）。书相关的一切来自 profile；判据仍只在仓库判据引擎一处实现。"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Mathlib 索引",
+    "description": "430,222 条 mathlib 声明的本地 SQLite 索引：按名字片段检索、读类型签名与描述、识别用不同名字陈述同一事实的声明。"
+  }
+}

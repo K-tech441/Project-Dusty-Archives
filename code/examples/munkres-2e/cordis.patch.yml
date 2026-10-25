@@ -1,0 +1,74 @@
+# 把 5 个 bundle 接进 DSH profile 的 config 片段（可直接抄）。
+#
+# ★ 只有带「← 改」的行是机器级 / 实例级配置；书相关的一切（书 id / 库名 / 清单目录 /
+#   图 / 术语表 / 页码索引 / 库外资源）都由 book profile 解析，不要写第二份。
+# ★ 示例里的 D:/your-instance 是实例仓库根（本例 = Munkres 实例的仓库位置）。
+# ★ 本文件是【片段】：真正生效的是各 bundle 自己的 cordis.patch.yml，或 profile 的
+#   package.json 里 dsh.profile.bundles 的顺序 + 各 bundle patch 的 config。
+- insert:
+    # ------------------------------------------------------------------ core
+    - id: pipeline-core
+      name: '@local/dsh-pipeline-core'
+      config:
+        enabled: true
+        profile: D:/your-instance/knowledge/book-profile.json   # ← 改：实例 profile
+        python: D:/your-python/python.exe                       # ← 改：装了 mcp 的解释器
+        pylibs: D:/your-pylibs                                  # ← 改（可选）：PyMuPDF 目录
+        injectContract: true
+        promptOrder: 880
+        gateTimeoutMs: 900000
+
+    # ------------------------------------------------------------------ 知识层 MCP（kl_* 工具）
+    - id: kl-mcp
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: kl
+        transport: stdio
+        command: D:/your-python/python.exe                      # ← 改
+        args: [-m, kl.mcp]
+        env:
+          PYTHONIOENCODING: utf-8
+          PYTHONPATH: D:/your-instance/tools;D:/your-pylibs     # ← 改：引擎所在目录
+          KL_PROFILE: D:/your-instance/knowledge/book-profile.json   # ← 改
+          KL_PYLIBS: D:/your-pylibs                             # ← 改（可选）
+        failOnStartupError: true
+        toolCallTimeoutMs: 900000
+
+    # ------------------------------------------------------------------ Lean LSP
+    # 外部 exe 只吃命令行参数 ⟹ 项目路径是显式一行（= profile 的 paths.repo）。
+    - id: lean-mcp
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: lean
+        transport: stdio
+        command: D:/lean-lsp-mcp/lean-lsp-mcp.exe               # ← 改：lean-lsp-mcp 安装路径
+        args: [--lean-project-path, D:/your-instance]           # ← 改：= paths.repo
+        env:
+          ELAN_HOME: D:/your-elan                               # ← 改（可选）：Lean toolchain 位置
+          LEAN_BUILD_CONCURRENCY: "cancel"
+          LEAN_MCP_DISABLED_TOOLS: "lean_run_code"
+          LEAN_MCP_SCRATCH_SLOTS: "1"
+        toolCallTimeoutMs: 600000
+        failOnStartupError: true
+
+    # ------------------------------------------------------------------ mathlib 本地索引（可选）
+    # 这个仓库不含索引 server 本身（它是独立工具，SQLite + FTS5）；没有就删掉这段。
+    - id: mathlib-mcp
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: mathlib
+        transport: stdio
+        command: D:/your-python/python.exe                      # ← 改
+        args: [D:/your-tools/mq_mcp.py]                         # ← 改：索引 server 脚本
+        env:
+          PYTHONIOENCODING: utf-8
+        failOnStartupError: true
+        toolCallTimeoutMs: 60000
+
+    # ------------------------------------------------------------------ 设置面板「知识图谱」
+    - id: graph-panel
+      name: '@local/dsh-graph-panel'
+      config:
+        enabled: true
+        profile: D:/your-instance/knowledge/book-profile.json   # ← 改
+        routePath: /plugins/graph-panel/graph.json

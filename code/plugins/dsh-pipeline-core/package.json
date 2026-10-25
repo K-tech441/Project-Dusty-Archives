@@ -1,0 +1,29 @@
+{
+  "name": "@local/dsh-pipeline-core",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "通用形式化管线核心：注入与书无关的流程契约，加载并校验 book profile，提供 pipeline_gate / pipeline_doctor。书相关的一切来自 profile；判据单一实现仍在仓库判据引擎。",
+  "exports": {
+    ".": "./index.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "lib/impl.cjs",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "meta": {
+    "title": "形式化管线核心",
+    "description": "通用 core：流程契约注入 + profile 校验 + 收口门禁。换书只换 book profile，core 不动。"
+  }
+}

@@ -1,0 +1,57 @@
+- insert:
+    - id: lean-mcp
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: lean
+        transport: stdio
+        command: D:\dsh-uv\tools\lean-lsp-mcp\Scripts\lean-lsp-mcp.exe
+        args:
+          - --lean-project-path
+          # ★ A3：这一行 = book profile 的 paths.repo（lean 工程 = 实例仓库根）。
+          #   换书/换实例改这一行（lean-lsp-mcp 是外部 exe，只能从命令行拿项目路径；
+          #   要让它读 profile 得加 wrapper，收益低于维护成本，故保留显式配置）。
+          #   LSP 是项目级的：指错项目会拿旧库的 olean / 编译单元服务新库。
+          - D:\munkres-formal
+        env:
+          ELAN_HOME: D:\lean\elan
+          # ripgrep 随 DSH 一起装好了（@vscode/ripgrep-win32-x64），只是不在 PATH。
+          # lean_local_search 需要 rg；这里把它的 bin 前置到 scrubbed 的 PATH 上，
+          # 用正斜杠避免 YAML/JS 里的反斜杠转义问题。
+          PATH: !!js '`${process.env.PATH};D:/dsh/resources/app.asar.unpacked/dsh/node_modules/@vscode/ripgrep-win32-x64/bin`'
+          # ★ 2026-10-21：内存管理。依据全部来自官方，不是猜的。
+          #
+          # 一、官方 README（打包在 lean_lsp_mcp-0.31.0.dist-info/METADATA）§Environment Variables
+          #    LEAN_MCP_SCRATCH_SLOTS  "increase it only when parallel attempts are worth the
+          #                             additional Lean process memory"
+          #    LEAN_BUILD_CONCURRENCY  allow（默认）/ cancel / share
+          #    lean_build 的工具说明   "Run `lake build` and restart the Lean LSP server"
+          #                            ⟹ 它编译完会重启 LSP ⟹ 这就是内建的【释放 worker】机制
+          #
+          # 二、官方 Issue #118（作者已实现 LEAN_BUILD_CONCURRENCY 并关闭）
+          #    原话："Some clients can cause multiple concurrent lake build processes to run,
+          #           which may exhaust memory and crash the MCP server or host."
+          #          "certain agents might request very large amount of memory (>16GB) when
+          #           using the server unproperly, while it should be possible to run the MCP
+          #           server on modest machines."
+          #    ⟹ 官方定性：这是【使用方式】问题，不是设计必然。
+          #    ⟹ 三个模式：allow（多个并发 build 全放行）· cancel（新的中止旧的）·
+          #                share（新的中止旧的，结果给所有订阅者）
+          #
+          # 三、我们的实际触发条件（2026-10-21 实测）
+          #    · 多个 agent 同时打同一个 LSP（我在调 lean_goal，子代理在跑 lake build）
+          #    · 桌面 shell 里另有一条 pwsh `lake build` 通道 ⟹ 两条 build 通道并存
+          #    ⟹ 并发 build 撞出 "failed to read … .olean"，一次 4 连败。
+          #
+          # 对策
+          #   · LEAN_BUILD_CONCURRENCY=cancel：后到的 build 中止先到的 ⟹ 不再并存
+          #   · 重新启用 lean_build：它是官方给的【编译 + 重启 LSP】工具，用来清 worker
+          #   · 仍然禁用 lean_run_code：它独占一个 serial scratch 槽（额外常驻 worker），
+          #     而我们需要「跑片段」的场合已经能用 lean_multi_attempt 覆盖
+          LEAN_BUILD_CONCURRENCY: "cancel"
+          LEAN_MCP_DISABLED_TOOLS: "lean_run_code"
+          # scratch 池压到最小（默认就是 1，写出来防止将来被改大）
+          LEAN_MCP_SCRATCH_SLOTS: "1"
+        # 10 分钟：import Mathlib 的首次求值要几分钟（LSP 冷启动 + 加载 olean 图）；
+        # 一旦加载完，同一 LSP 会话内的后续调用是秒级。正常调用不会等满这个上限。
+        toolCallTimeoutMs: 600000
+        failOnStartupError: true

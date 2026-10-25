@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Formalization Pipeline Core",
+    "description": "The book-agnostic half: injects the workflow contract, loads and validates a book profile, and provides pipeline_gate (pointer check / four criteria / two-way audit in one call). Everything book-specific comes from the profile; criteria stay implemented only in the repository's judge engine."
+  }
+}

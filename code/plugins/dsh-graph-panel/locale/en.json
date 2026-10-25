@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Knowledge Graph",
+    "description": "Four-layer declaration graph of the Munkres formalization (nodes = declarations, edges = mentions A/B/I/R), zoomable and searchable."
+  }
+}

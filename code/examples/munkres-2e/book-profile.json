@@ -1,0 +1,66 @@
+{
+  "schema": "book-profile/v1",
+  "book_id": "munkres-2e",
+  "title": "Topology, 2nd edition (Munkres) / 拓扑学（原书第2版）",
+  "notes": "书实例 profile：core 插件与本书之间的唯一契约。换书 = 复制本文件改 book_config / paths / docs / env / contract_extras；core 不改。schema 与字段见 docrepo docs/plugin-api.md §3。",
+
+  "book_config": "knowledge/books/munkres-2e.json",
+
+  "paths": {
+    "repo": "..",
+    "md": "D:/deepseek工作区/munkres/tools/_decouple/book_md",
+    "inventory": "knowledge/pipeline",
+    "order_table": "knowledge/pipeline/入序表.json",
+    "base_lean": "MunkresLean/Base.lean",
+    "graph": "knowledge/pipeline/graph.json",
+    "glossary": "knowledge/glossary.json"
+  },
+
+  "docs": {
+    "pipeline": "docs/管线.md",
+    "baseline": "docs/工程基准.md",
+    "resources": "docs/资源与数据源.md"
+  },
+
+  "lean": {
+    "lib": "MunkresLean",
+    "namespace": "Munkres",
+    "strip_prefixes": ["Munkres.Topology.", "Munkres."],
+    "toolchain_file": "lean-toolchain",
+    "build_system": "lake"
+  },
+
+  "cli": {
+    "module": "kl.cli"
+  },
+
+  "atoms": {
+    "kinds": ["definition", "theorem", "lemma", "example"],
+    "example_policy": "numbered_only",
+    "partial_policy": "witness_required",
+    "required_fields": ["id", "kind", "quote", "loc", "lean"]
+  },
+
+  "judge": {
+    "base_candidate": "knowledge/pipeline/base_candidate.json",
+    "forbidden_list": "knowledge/pipeline/基底.json",
+    "scope_extras": "knowledge/pipeline/基底.json#scope_extras",
+    "extensions": []
+  },
+
+  "env": {
+    "KL_BOOK_ID": "munkres-2e",
+    "KL_BOOK_INDEX": "D:/deepseek工作区/munkres/book/index.json",
+    "KL_BOOK_MD": "D:/deepseek工作区/munkres/tools/_decouple/book_md",
+    "KL_BOOK_PDF": "D:/deepseek工作区/munkres/tools/_pdfmath_run/munkres.pdf"
+  },
+
+  "contract_extras": "docs/契约补充.md",
+
+  "render": {
+    "default_view": "atom",
+    "language": "zh"
+  },
+
+  "extensions": {}
+}

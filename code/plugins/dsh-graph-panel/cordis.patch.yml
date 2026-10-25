@@ -1,0 +1,12 @@
+# graph-panel 的 Loader 补丁层
+#
+# ★ A3：图的位置由 book profile 给出（与 pipeline-core / mcp-kl 同一份）。
+#   换书/换实例只改 profile 这一行；宿主每次请求重新解析（改 profile 不用重启）。
+#   没有 profile 时可退回 repoRoot + graphRel（旧行为）。
+- insert:
+    - id: graph-panel
+      name: '@local/dsh-graph-panel'
+      config:
+        enabled: true
+        profile: D:/munkres-formal/knowledge/book-profile.json
+        routePath: /plugins/graph-panel/graph.json

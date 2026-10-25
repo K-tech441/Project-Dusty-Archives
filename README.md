@@ -44,6 +44,13 @@ flowchart LR
 LLM 不直接当裁判——它写转录、写清单、写证明、写图；每一层都有对应的机械检查，
 检查不过就修，修不过就停下来报告。
 
+## 仓库结构
+
+```
+docs/    方案文档（架构 / 判据 / 数据契约 / 插件接口 / 换书手册 / 取舍 Q&A）
+code/    可运行参考实现（判据引擎 Python、5 个 DSH 插件、实例 pack 样本 + 安装配置）
+```
+
 ## 文档
 
 | 文档 | 内容 |
@@ -54,6 +61,7 @@ LLM 不直接当裁判——它写转录、写清单、写证明、写图；每�
 | [docs/faq.md](docs/faq.md) | 设计取舍 Q&A：为什么这样设计、为什么不那样做 |
 | [docs/scenarios.md](docs/scenarios.md) | 除了数学教材，这套方案还能用在哪些场景（附边界说明） |
 | [docs/new-book.md](docs/new-book.md) | 换一本书的落地手册（参数清单 + 步骤） |
+| [code/README.md](code/README.md) | **参考实现**：目录、依赖、安装步骤、三条验收命令 |
 
 ## 当前状态（活证据）
 
@@ -68,16 +76,34 @@ LLM 不直接当裁判——它写转录、写清单、写证明、写图；每�
 | 每一节的验收 | 判据（build / sorry&axioms / 基底提及 / 判重 / quote 逐字 / module 卫生）+ 双向覆盖 |
 | 插件形态 | 通用 `pipeline-core` + 本书 profile（A1–A3 已落地）；判据引擎按 `KL_PROFILE` 解析书数据，MCP 面（工具/图面板）配置里只留 profile 一行 |
 
-> 注：本仓库只包含**方案文档**与工具接口说明。教材 PDF、OCR 转录与 Lean 源码属于
-> 具体实例工程的物料，不随本仓库分发（版权与体量原因）。
+> 注：本仓库包含**方案文档**与**可运行参考实现**（`code/`）。教材 PDF、OCR 转录与
+> 实例 Lean 源码属于具体实例工程的物料，不随本仓库分发（版权与体量原因）；
+> `code/examples/` 里给的是实例的**配置样本**，照着它填你自己的书。
 
-## 快速开始（读）
+## 快速开始
+
+**读**（先理解方案）：
 
 ```bash
 git clone <this-repo>
-open docs/architecture.md     # 先读架构
-open docs/faq.md              # 再读取舍
+open docs/architecture.md     # 架构：从 PDF 到原子图
+open docs/plugin-api.md       # 插件接口：core + book pack
+open docs/new-book.md         # 换书手册：要填什么
 ```
+
+**跑**（照着参考实现接一条管线）：
+
+```bash
+pip install mcp pymupdf pillow
+export PYTHONPATH=<实例仓库>/tools
+export KL_PROFILE=<实例仓库>/knowledge/book-profile.json
+
+python -m kl.cli config       # 配置解析对不对（排障第一站）
+python -m kl.cli doctor       # 14 项机械体检
+python -m kl.cli graph        # 图 + 15 条断言
+```
+
+细节：[code/README.md](code/README.md)（安装）· [code/examples/munkres-2e/](code/examples/munkres-2e/)（可抄的 profile 与配置片段）。
 
 ## 设计原则（TL;DR）
 

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <title>Mathlib Index</title>
+  <!-- 一个放大镜里装着 λ：检索 + 数学 -->
+  <g fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="10.5" cy="10.5" r="6.5"/>
+    <path d="M15.4 15.4 L20.5 20.5"/>
+    <!-- λ 的字形 -->
+    <path d="M8.2 7.2 L11.4 14.2" stroke="#2563eb" stroke-width="1.6"/>
+    <path d="M12.9 7.2 L9.6 13.0" stroke="#2563eb" stroke-width="1.6"/>
+  </g>
+</svg>

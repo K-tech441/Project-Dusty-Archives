@@ -1,0 +1,7 @@
+# 文档与代码同仓；这些不入版本库
+__pycache__/
+*.pyc
+*.pyo
+node_modules/
+.DS_Store
+Thumbs.db

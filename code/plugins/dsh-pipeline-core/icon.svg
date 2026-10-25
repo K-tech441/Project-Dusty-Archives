@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="formalization pipeline core">
+  <rect width="64" height="64" rx="12" fill="#1f2937"/>
+  <!-- 书页 -->
+  <path d="M10 18h18v28H10z" fill="none" stroke="#e5e7eb" stroke-width="2.4" stroke-linejoin="round"/>
+  <path d="M10 18c4-2 8-2 18 0" fill="none" stroke="#e5e7eb" stroke-width="2.4"/>
+  <!-- 箭头 -->
+  <path d="M30 30h8m0 0-3-3m3 3-3 3" stroke="#93c5fd" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 节点与边 -->
+  <circle cx="46" cy="20" r="4" fill="#93c5fd"/>
+  <circle cx="54" cy="32" r="4" fill="#93c5fd"/>
+  <circle cx="46" cy="44" r="4" fill="#93c5fd"/>
+  <path d="M46 24v16M49 22l3 7M49 42l3-7" stroke="#e5e7eb" stroke-width="1.8" fill="none"/>
+  <circle cx="38" cy="32" r="2.2" fill="#fbbf24"/>
+</svg>

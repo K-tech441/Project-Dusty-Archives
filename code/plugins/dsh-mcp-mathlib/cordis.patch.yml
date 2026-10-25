@@ -1,0 +1,17 @@
+# mathlib 本地索引 —— 工具级服务，**与书无关**（任何书共用同一个 mathlib 索引）。
+# 换机器改 command / args 两处路径；索引 DB 位置由 mq_mcp.py 自己的环境变量决定。
+- insert:
+    - id: mathlib-mcp
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: mathlib
+        transport: stdio
+        # 用装了 mcp 库的那个解释器（与 lean-mcp 同一个 venv）
+        command: D:/dsh-uv/tools/lean-lsp-mcp/Scripts/python.exe
+        args:
+          - D:/deepseek工作区/munkres/tools/mq_mcp.py
+        env:
+          PYTHONIOENCODING: utf-8
+        failOnStartupError: true
+        # 索引是 SQLite，查询毫秒级；只有首次 import 需要几百毫秒
+        toolCallTimeoutMs: 60000

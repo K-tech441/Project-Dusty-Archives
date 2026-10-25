@@ -1,0 +1,20 @@
+# dsh-pipeline-core 的 Loader 补丁层
+#
+# 通用 core：本文件不含书名/书路径 —— 书实例的一切由 profile 给出。
+# 本插件不声明 Config schema（link: 安装的包不解析 @deepseek-ai/schemastery），
+# config 直接由这里给出，缺省值在 lib/impl.cjs 的 DEFAULTS 里补齐。
+#
+# ★ profile 是 core 与书之间的唯一契约（字段见 docrepo docs/plugin-api.md §3）。
+#   换书 = 换这一行 profile 路径，其余不动。
+- insert:
+    - id: pipeline-core
+      name: '@local/dsh-pipeline-core'
+      config:
+        enabled: true
+        # 书实例 profile（绝对路径；可指向仓库内或独立 pack 目录）
+        profile: D:/munkres-formal/knowledge/book-profile.json
+        python: D:/dsh-uv/tools/lean-lsp-mcp/Scripts/python.exe
+        pylibs: D:/pylibs
+        injectContract: true
+        promptOrder: 880
+        gateTimeoutMs: 900000

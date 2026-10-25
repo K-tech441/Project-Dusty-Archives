@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Lean LSP Connection",
+    "description": "Connects the local Lean language server of the Munkres project, exposing declaration search, hover documentation, proof goals and code evaluation as mcp__lean__* tools."
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Lean LSP 连接",
+    "description": "连接 Munkres 项目的本地 Lean 语言服务器，把声明检索、悬停文档、证明目标与代码求值作为 mcp__lean__* 工具提供。"
+  }
+}

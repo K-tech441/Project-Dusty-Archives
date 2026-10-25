@@ -1,0 +1,33 @@
+# kl —— 形式化管线（知识层）MCP 服务。
+#
+# 引擎在「实例仓库」的 tools/kl（本 bundle 只是把它接进 DSH 环境）。
+#
+# ★ A3 之后，书相关的一切（书 id / 库名 / 清单目录 / 图 / 术语表 / 页码索引 /
+#   英文 PDF / md 转录 / 中译目录索引）都由 KL_PROFILE 指向的 book profile 给出，
+#   引擎启动时读它并回填 KL_* 环境变量。本文件只保留【机器级/引擎位置】配置：
+#
+#     python               装了 mcp 的解释器（换机器改）
+#     PYTHONPATH           <repo>/tools;<pymupdf 目录>（换仓库改这一行）
+#     KL_PROFILE           <repo>/knowledge/book-profile.json（换书/换实例改这一行）
+#
+#   其余路径不要再写在这里 —— 写两份必然漂（A3 前就有过 MCP 与门禁看到不同书的风险）。
+#   字段定义见 docrepo docs/plugin-api.md §3。
+- insert:
+    - id: kl-mcp
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: kl
+        transport: stdio
+        command: D:/dsh-uv/tools/lean-lsp-mcp/Scripts/python.exe
+        args:
+          - -m
+          - kl.mcp
+        env:
+          PYTHONIOENCODING: utf-8
+          PYTHONPATH: D:/munkres-formal/tools;D:/pylibs
+          KL_PROFILE: D:/munkres-formal/knowledge/book-profile.json
+          # 图解码（kl_figure）用的 PyMuPDF 目录；bookindex._pymupdf 也读它
+          KL_PYLIBS: D:/pylibs
+        failOnStartupError: true
+        # kl_check 要跑 lake build（增量约 5s）；--with-dup 时约 1–4 分钟
+        toolCallTimeoutMs: 900000
