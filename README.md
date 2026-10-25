@@ -8,11 +8,12 @@ and an interactive "atom graph".**
 
 ![总架构](docs/assets/architecture.svg)
 
-> 图中红虚线框 **G5** 是最后一项**尚未描述清楚**的接口——本仓库的文档工作就是把这个框消灭。
-> 已关闭四个：G1「书配置 schema」已成文（[book-config.md](docs/book-config.md)，纯数据、人填页码）；
+> 图中已无红虚线框：**G1–G5 全部关闭**。
+> G1「书配置 schema」已成文（[book-config.md](docs/book-config.md)：纯数据、人填页码、支持章号≠页序）；
 > G2「OCR 可复现性」是本质黑箱（VLM 幻觉只能压低不能消除，改为"视觉核对 + 留痕"规则）；
 > G3「多书共存」论证不可行（跨书原子同一性判定不可计算——外延类型论 ETT）；
-> G4「插件一般化接口」已成文（[plugin-api.md](docs/plugin-api.md)：core + book pack，判据分固定/可配/可扩展）。
+> G4「插件一般化接口」已成文（[plugin-api.md](docs/plugin-api.md)：core + book pack，判据分固定/可配/可扩展）；
+> G5「评估」不设指标——验收是主观的：**它是否确实还原出了原书的信息**，统计只作辅助证据。
 
 ---
 
