@@ -190,7 +190,7 @@ def svg():
     o.append(box(X0 + 360, y, 280, 90, "Web 面板", ["缩放 / 拖拽 / 搜索", "声明视图 ⇄ 原子视图"], C_PROC))
     o.append(box(X0 + 680, y, 240, 90, "导出 / 报告", ["graph.json / 统计", "术语表 / 进度"], C_ART))
     o.append(arrow(X0 + 500, y - 62, X0 + 500, y - 8))
-    o.append(box(X0 + 950, y, 250, 90, "G4 插件一般化接口", ["pipeline-core / book 拆分", "（文档未定）"], C_GAP, dashed=True))
+    o.append(box(X0 + 950, y, 250, 90, "插件接口 v1（G4 已关闭）", ["core + book pack 拆分", "规范：docs/plugin-api.md"], C_ART))
 
     # 已关闭的缺口 G3（多书共存）→ 转为边界；G5 仍开放
     o.append(box(X0 + 1000, 350, 240, 96, "边界：多书 = 独立实例", ["原子不跨书引用", "（外延类型论：不可判定）", "共享仅基底 / 工具层"], C_ART))

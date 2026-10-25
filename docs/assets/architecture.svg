@@ -159,10 +159,10 @@
 <text x="1078" y="1210" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">graph.json / 统计</text>
 <text x="1078" y="1228" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">术语表 / 进度</text>
 <line x1="778" y1="1108" x2="778" y2="1162" stroke="#555555" stroke-width="1.8" marker-end="url(#ah)"/>
-<rect x="1228" y="1170" width="250" height="90" rx="8" fill="#fff0f0" stroke="#cc3333" stroke-width="1.6" stroke-dasharray="6,4"/>
-<text x="1353" y="1192" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">G4 插件一般化接口</text>
-<text x="1353" y="1210" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">pipeline-core / book 拆分</text>
-<text x="1353" y="1228" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">（文档未定）</text>
+<rect x="1228" y="1170" width="250" height="90" rx="8" fill="#eef3fb" stroke="#4a6fa5" stroke-width="1.6"/>
+<text x="1353" y="1192" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">插件接口 v1（G4 已关闭）</text>
+<text x="1353" y="1210" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">core + book pack 拆分</text>
+<text x="1353" y="1228" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">规范：docs/plugin-api.md</text>
 <rect x="1278" y="350" width="240" height="96" rx="8" fill="#eef3fb" stroke="#4a6fa5" stroke-width="1.6"/>
 <text x="1398" y="372" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">边界：多书 = 独立实例</text>
 <text x="1398" y="390" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">原子不跨书引用</text>

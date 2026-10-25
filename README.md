@@ -8,10 +8,11 @@ and an interactive "atom graph".**
 
 ![总架构](docs/assets/architecture.svg)
 
-> 图中红虚线框 G4/G5 是**尚未描述清楚**的接口/区域——本仓库的文档工作就是把这些框逐个消灭。
-> 已关闭三个：G1「书配置 schema」已成文（[book-config.md](docs/book-config.md)，纯数据、人填页码）；
+> 图中红虚线框 **G5** 是最后一项**尚未描述清楚**的接口——本仓库的文档工作就是把这个框消灭。
+> 已关闭四个：G1「书配置 schema」已成文（[book-config.md](docs/book-config.md)，纯数据、人填页码）；
 > G2「OCR 可复现性」是本质黑箱（VLM 幻觉只能压低不能消除，改为"视觉核对 + 留痕"规则）；
-> G3「多书共存」论证不可行（跨书原子同一性判定不可计算——外延类型论 ETT）。
+> G3「多书共存」论证不可行（跨书原子同一性判定不可计算——外延类型论 ETT）；
+> G4「插件一般化接口」已成文（[plugin-api.md](docs/plugin-api.md)：core + book pack，判据分固定/可配/可扩展）。
 
 ---
 
@@ -46,6 +47,7 @@ LLM 不直接当裁判——它写转录、写清单、写证明、写图；每�
 |---|---|
 | [docs/architecture.md](docs/architecture.md) | **主文档**：从 PDF 到原子图的完整架构（七层、数据契约、判据、agent 协议、插件、一般化） |
 | [docs/book-config.md](docs/book-config.md) | **书配置 schema v1**：每节 ↔ 各版本页范围（纯数据，附真实示例与校验清单） |
+| [docs/plugin-api.md](docs/plugin-api.md) | **插件接口（G4）**：core + book pack 拆分、book-profile 契约、判据固定/可配/可扩展、迁移与负向测试 |
 | [docs/faq.md](docs/faq.md) | 设计取舍 Q&A：为什么这样设计、为什么不那样做 |
 | [docs/scenarios.md](docs/scenarios.md) | 除了数学教材，这套方案还能用在哪些场景（附边界说明） |
 | [docs/new-book.md](docs/new-book.md) | 换一本书的落地手册（参数清单 + 步骤） |
