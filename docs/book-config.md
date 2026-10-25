@@ -90,6 +90,52 @@ md 页   = en_pdf（md_page = "pdf"）            → §12: p0077–p0080
 zh_pdf  = zh_printed + printed_to_pdf(11)      → §12: 69–70
 ```
 
+### 2.1 两种等价填法（实现现状：本实例用的是「提取式」）
+
+上面的 `ranges` 是**人填式**：人从目录抄每节的印刷页范围。另一种是**提取式**：
+PDF 有文字层时，页码范围可以由程序从**页眉/页脚**机械提取，人只提供提取参数。
+两种填法的产物相同——都是生成物 `index.json` 里的「每节五坐标范围」，
+判据也只看生成物。本实例实际用的是提取式：
+
+```json
+// knowledge/books/<id>.json —— 提取参数（不是页码本身）
+{
+  "sources": {
+    "en": {
+      "kind": "pdf_text",
+      "pdf_env": "KL_BOOK_PDF", "md_env": "KL_BOOK_MD",
+      "md_name_pattern": "^p(\\d{4})\\.md$", "md_page_source": "pdf_page"
+    },
+    "zh": { "kind": "scanned_pdf_index", "index_env": "KL_BOOK_INDEX" }
+  },
+  "folio": {
+    "head_lines": 3, "foot_lines": 2,
+    "patterns": ["^(\\d{1,3})\\s+[A-Z§]", "\\s(\\d{1,3})\\s*$", "^(\\d{1,3})$"]
+  },
+  "sections": { "patterns": ["^§\\s*(\\d{1,2})\\s+[A-Z]", "^§\\s*(\\d{1,2})\\b"] }
+}
+```
+
+| 填法 | 适用 | 谁给出范围 | 校验 |
+|---|---|---|---|
+| 人填式（§2） | 扫描件 / 无文字层 / 无 PDF | 人抄目录的印刷页范围 | V1–V9（尤其 V5 标题页在范围内） |
+| 提取式（本节） | 有文字层的 PDF（本实例） | `book-build` 从页眉机械提取 | 提取器自检 + V5 的等价检查（doctor「页码索引」项：节标题页必须在 md 范围内） |
+
+`book-build` 的输出（查询唯一入口）：
+
+```
+knowledge/books/<id>/index.json
+  sources / offsets        每源偏移（分段：如本实例前附页偏移 4、正文 2）
+  pages                    pdf ↔ 印刷 每页对照
+  page_section             每页所属节（OCR 噪声下仅供参考，不作判据）
+  sections                 每节五坐标范围：en_printed / en_pdf / md / zh_printed / zh_pdf
+  figures                  图号 → 页（图题行整行匹配）
+```
+
+> 为什么把"人填"写成 §2 的主形态、实现却用提取式：`ranges` 是**schema**（通用、可手填、
+> 无依赖）；提取是**工具**（有文字层时更少人工错误）。schema 不规定实现方式（§6）。
+> 约定不变：**配置只存原始数据/提取参数，区间是生成物**。
+
 ### 2.5 特殊情况：章号 ≠ 页序（必须支持）
 
 书是物理装订的：**章/节的数字标签与它们在书里出现的先后顺序不一定一致**。

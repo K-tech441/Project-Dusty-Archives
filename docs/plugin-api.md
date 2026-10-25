@@ -25,16 +25,16 @@ book    = 因书而变的东西：书配置、原子口径、基底参数、领�
 
 ## 2. 包拆分
 
-| 目标包 | 职责 | 来源（当前实现） |
-|---|---|---|
-| `pipeline-core` | 注入流程契约；`pipeline_gate` / `pipeline_doctor`；加载并校验 book profile；CLI 桥 | `dsh-munkres-pipeline`（去掉 Munkres 文案/路径硬编码） |
-| `pipeline-book-<id>` | 书配置 + 原子口径 + 基参数 + 领域判据扩展 + 渲染配置 + 项目文案 | 当前仓库里的 `knowledge/`、`基底.json`、`glossary`、`docs` 相关部分 |
-| `mcp-pipeline` | 通用 MCP：清单/判据/图/页码查询（原 `kl` 工具面） | `dsh-mcp-kl` / `tools/kl` |
-| `mcp-lean` | Lean LSP 工具面（项目路径可配） | `dsh-mcp-lean` |
-| `mcp-mathlib` | 本地 mathlib 检索索引 | `dsh-mcp-mathlib` |
-| `graph-panel` | 图渲染（读 `graph.json` + 渲染配置） | `dsh-graph-panel` |
-| （可选）`compact-control` | 上下文压缩控制（与书无关） | `dsh-compact-control` |
-| （独立族）`class-*` | 教学/授课插件（不属于本管线主链） | `dsh-munkres-class` |
+| 目标包 | 职责 | 来源（当前实现） | 状态 |
+|---|---|---|---|
+| `pipeline-core` | 注入流程契约；`pipeline_gate` / `pipeline_doctor`；加载并校验 book profile；CLI 桥 | `@local/dsh-pipeline-core`（由 `dsh-munkres-pipeline` 一般化而来） | ✅ A1/A2 |
+| `pipeline-book-<id>` | 书配置 + 原子口径 + 基参数 + 领域判据扩展 + 渲染配置 + 项目文案 | 实例仓库：`knowledge/book-profile.json` + `docs/契约补充.md` | ✅ A2 |
+| `mcp-pipeline` | 通用 MCP：清单/判据/图/页码查询（原 `kl` 工具面） | `dsh-mcp-kl` / `tools/kl` | 待做 A3 |
+| `mcp-lean` | Lean LSP 工具面（项目路径可配） | `dsh-mcp-lean` | 路径仍硬编码（A3） |
+| `mcp-mathlib` | 本地 mathlib 检索索引 | `dsh-mcp-mathlib` | 索引路径仍硬编码（A3） |
+| `graph-panel` | 图渲染（读 `graph.json` + 渲染配置） | `dsh-graph-panel` | 仓库路径仍硬编码（A3） |
+| （可选）`compact-control` | 上下文压缩控制（与书无关） | `dsh-compact-control` | 可复用 |
+| （独立族）`class-*` | 教学/授课插件（不属于本管线主链） | `dsh-munkres-class` | 与书绑定（不入主链） |
 
 一个 **book pack** 就是一个目录（可独立发版/复用），至少包含：
 
@@ -44,6 +44,10 @@ judge/ext/*.py|*.js    # 领域判据扩展（可选，见 §5）
 contract-extras.md     # 项目补充规则（可选，见 §6）
 render.json            # 图渲染配置（可选）
 ```
+
+> **实现现状**：Munkres 实例的 pack 直接住在实例仓库里（一个仓库 = 一个实例）：
+> `knowledge/book-profile.json`（profile）+ `docs/契约补充.md`（补充契约）。
+> pack 不需要是独立 npm 包 —— core 只按路径读它。
 
 ---
 
@@ -55,44 +59,68 @@ core 只认这一份文件；其余路径、名字、口径都由它给出。
 {
   "schema": "book-profile/v1",
   "book_id": "munkres-2e",
-  "book_config": "knowledge/book.json",        // 书配置（book-config/v1，见 book-config.md）
+  "title": "Topology, 2nd edition (Munkres) / 拓扑学（原书第2版）",
+  "book_config": "knowledge/books/munkres-2e.json",   // 书配置（book-config/v1，见 book-config.md）
 
   "paths": {
-    "repo": ".",                                // 仓库根（相对 profile 或绝对）
-    "md": "book/md",                            // 转录目录
-    "inventory": "knowledge/pipeline",          // sectionNN.json / 入序表 / 基底.json
-    "base_lean": "MunkresLean/Base.lean",       // 基底唯一入口
+    "repo": "..",                                       // 仓库根：相对 profile 文件所在目录
+    "md": "D:/…/book_md",                               // 转录目录（库外资源可用绝对路径）
+    "inventory": "knowledge/pipeline",                  // sectionNN.json / 入序表 / 基底.json
+    "order_table": "knowledge/pipeline/入序表.json",     // 跨节写序
+    "base_lean": "MunkresLean/Base.lean",               // 基底唯一入口
     "graph": "knowledge/pipeline/graph.json",
     "glossary": "knowledge/glossary.json"
   },
-  "lean": {
-    "lib": "MunkresLean",                       // 聚合文件 = <lib>.lean
-    "toolchain_file": "lean-toolchain"
+  "docs": {                                             // 权威文档指针（进注入契约的引用）
+    "pipeline": "docs/管线.md",
+    "baseline": "docs/工程基准.md",
+    "resources": "docs/资源与数据源.md"
   },
+  "lean": {
+    "lib": "MunkresLean",                               // 内容库名；聚合文件 = <lib>.lean
+    "toolchain_file": "lean-toolchain",
+    "build_system": "lake"
+  },
+  "cli": { "module": "kl.cli" },                        // 判据引擎模块：python -m <module>
   "atoms": {
-    "kinds": ["definition", "theorem", "example", "proposition"],
-    "example_policy": "numbered_only",           // 哪些例子开原子
-    "partial_policy": "witness_required",        // partial 必须带 witness
+    "kinds": ["definition", "theorem", "lemma", "example"],
+    "example_policy": "numbered_only",                  // 哪些例子开原子
+    "partial_policy": "witness_required",               // partial 必须带 witness
     "required_fields": ["id", "kind", "quote", "loc", "lean"]
   },
   "judge": {
     "base_candidate": "knowledge/pipeline/base_candidate.json",
     "forbidden_list": "knowledge/pipeline/基底.json",
     "scope_extras": "knowledge/pipeline/基底.json#scope_extras",
-    "extensions": ["judge/ext/*.py"]             // 追加式，不可关闭 core 判据
+    "extensions": []                                    // 追加式，不可关闭 core 判据
+  },
+  "env": {                                              // 子进程环境（库外资源、书 id）
+    "KL_BOOK_ID": "munkres-2e",
+    "KL_BOOK_INDEX": "D:/…/book/index.json",
+    "KL_BOOK_MD": "D:/…/book_md",
+    "KL_BOOK_PDF": "D:/…/munkres.pdf"
   },
   "render": { "default_view": "atom", "language": "zh" },
-  "contract_extras": "contract-extras.md"
+  "contract_extras": "docs/契约补充.md"
 }
 ```
 
-**core 的校验**（profile 加载即查，失败 = 拒绝启动，不静默降级）：
+**路径解析约定**（实现里硬性如此，避免"相对谁"的歧义）：
 
-- `schema` 必须是它支持的 major 版本；
-- `paths.*` 必须存在（repo/md/inventory/base_lean/graph/glossary）；
-- `lean.lib` 与聚合文件存在；`toolchain_file` 存在；
-- `atoms.required_fields` 至少包含固定最小集（见 §4 不可变清单）；
-- `judge.*` 指向的文件存在；extensions 能加载；
+```
+paths.repo          相对 profile 文件所在目录（或绝对路径）
+其余所有相对路径     相对 paths.repo（= 仓库根）
+绝对路径            原样使用（库外资源：PDF / 转录 / 中文版目录索引）
+```
+
+**core 的校验分两档**（负向测试覆盖）：
+
+| 档 | 时机 | 失败表现 |
+|---|---|---|
+| 结构校验 | plugin 加载时（`apply`） | **拒绝启动**：缺 `schema` / 主版本不符 / 缺 `book_id`、`paths.*`、`lean.lib`、`atom` 必填最小集…，错误里带具体字段名 |
+| 资源存在性 | `pipeline_doctor` | **体检红**：`✗ paths.graph — <路径>`，指出字段名与路径；插件照常启动（资源没下完的仓库也要能体检） |
+
+- `atoms.required_fields` 至少包含固定最小集 `id / kind / quote / loc / lean`（只能加不能减）；
 - 未知键**允许**（前向兼容），但 core 必须忽略而不是猜测。
 
 ---
@@ -162,12 +190,18 @@ ctx = {
 
 ## 6. 流程契约注入：core 文本 + book 补充
 
-- core 提供**通用契约**（判据/五步/LSP/协作/停止条件）——与书无关；
+- core 提供**通用契约**（判据/五步/LSP/协作/停止条件/测量纪律）——与书无关；
 - book pack 可提供 `contract-extras.md`，注入时附在 core 文本后面，标题固定为
   **【项目补充】**；
 - 冲突规则：**core 优先**（书本补充不得与其矛盾；出现冲突视为 book pack 的 bug）；
 - 补充文本的用途：本书特有的术语约定、章节组织、已知例外（如"本书 13/14 章装订对换，
-  按物理页序"），而不是重复通用规则。
+  按物理页序"）、项目基准（book / mathlib）、权威文档指针，而不是重复通用规则。
+
+> **实现现状（A1/A2）**：注入文本 = `core 契约 v6` 头行 + 通用正文 + `【项目补充】` 全文。
+> core 契约版本号在 `pipeline_doctor` 首行打印；**改完契约必须重启 DSH**（契约在插件加载时
+> 固化，与工具表同理）。
+> 旧的独立「工作判据注入」插件已并入本机制：其中**通用**的测量/查证纪律进 core 正文，
+> **本书**的工作基准（以原书为准、B 层边留在书内…）进 `契约补充.md`；插件本身停用。
 
 ---
 
@@ -183,19 +217,36 @@ core 消费的生成物（`sectionNN.json` / 探针 / `graph.json` / verdict）*
 
 ## 8. 迁移路径（从现状到拆分）
 
-| 步 | 动作 | 验收 |
-|---|---|---|
-| A1 | 把 `dsh-munkres-pipeline` 的 Munkres 文案/路径改成从 profile 读 | 现有实例用 profile 能跑出**相同**的 gate/doctor 输出 |
-| A2 | 建 `book pack: munkres-2e`（book config / 基底参数 / glossary seed / render 配置 / 文案） | core 里 grep 不到 "Munkres"/中文书名/`knowledge/pipeline` 等硬编码 |
-| A3 | 通用化 `mcp-pipeline`（`kl` → pipeline，路径从 profile 取） | 全部 kl 工具在 munkres pack 下通过 |
-| A4 | 第二本书试点（最小：一节即可） | 只写 book pack + 填数据，core 零改动跑通 |
+| 步 | 动作 | 验收 | 状态 |
+|---|---|---|---|
+| A1 | 把 `dsh-munkres-pipeline` 的 Munkres 文案/路径改成从 profile 读 | 现有实例用 profile 能跑出**相同**的 gate/doctor 输出 | ✅ 2026-10-25 |
+| A2 | 建 `book pack: munkres-2e`（profile / 契约补充 / 基底参数 / 渲染配置） | core 里 grep 不到 "Munkres"/中文书名/`knowledge/pipeline` 等硬编码 | ✅ 2026-10-25 |
+| A3 | 通用化 `mcp-pipeline`（`kl` → pipeline，路径从 profile 取） | 全部 kl 工具在 munkres pack 下通过 | 待做 |
+| A4 | 第二本书试点（最小：一节即可） | 只写 book pack + 填数据，core 零改动跑通 | 待做 |
 
-**负向测试**（必须通过才算一般化成功）：
+**负向测试**（必须通过才算一般化成功）——A1/A2 的离线测试台已覆盖：
 
-- 缺 `book-profile.json` 字段 ⟹ 拒绝启动（不默认猜测）；
-- extension 抛异常 ⟹ gate 红；
-- 试图"关闭核心判据"⟹ 无 API 可实现；
-- profile 指向不存在的路径 ⟹ doctor 红，且错误信息指出具体字段。
+- 缺 `book-profile.json` 字段 ⟹ 拒绝启动（不默认猜测）；✅ `test/check.mjs` 覆盖
+- profile 指向不存在的路径 ⟹ doctor 红，且错误信息指出具体字段名；✅ 覆盖
+- 不认识的主版本 / 减掉原子必填最小集 ⟹ 拒绝启动；✅ 覆盖
+- 未知键允许（前向兼容，core 忽略而不猜）；✅ 覆盖
+- extension 抛异常 ⟹ gate 红；试图"关闭核心判据"⟹ 无 API 可实现（未实现包不测）。
+
+**A1/A2 的验收证据**（同一份 core + 实例 profile）：
+
+```
+$ node test/check.mjs
+✓ link-check  checked 70 条指针
+✓ check       build 2.4s · axioms 70 条
+✓ audit       items 13 · coverage 13/13 · mapping 70/70
+--- doctor ---
+[1/2] 书 profile（knowledge/book-profile.json）: 16 项路径全 ✓
+[2/2] 判据引擎（python -m kl.cli doctor）: 13 项全 ✓
+OK: pipeline-core 离线测试通过
+```
+
+`pipeline_gate(§19)` / `pipeline_doctor` 的输出与旧 Munkres 专用插件一致（工具名、步骤、
+`steps/problems/next/report` 结构都不变，只是 report 头行多了书 id 与 core 契约版本）。
 
 ---
 
