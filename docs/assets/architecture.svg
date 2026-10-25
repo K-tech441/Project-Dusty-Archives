@@ -63,10 +63,10 @@
 <text x="903" y="232" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">逐页 Markdown</text>
 <text x="903" y="250" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">文件名 = PDF 页号</text>
 <text x="903" y="268" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">★ 页码对齐的锚</text>
-<rect x="1038" y="210" width="230" height="90" rx="8" fill="#fff0f0" stroke="#cc3333" stroke-width="1.6" stroke-dasharray="6,4"/>
-<text x="1153" y="232" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">G2 OCR 可复现性</text>
-<text x="1153" y="250" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">模型版本/提示词/重跑</text>
-<text x="1153" y="268" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">抽检记录（文档未定）</text>
+<rect x="1038" y="210" width="230" height="90" rx="8" fill="#eef3fb" stroke="#4a6fa5" stroke-width="1.6"/>
+<text x="1153" y="232" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">边界：转录 = 黑箱（VLM）</text>
+<text x="1153" y="250" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">幻觉只能压低，不能消除</text>
+<text x="1153" y="268" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">视觉核对 + 留痕</text>
 <line x1="498" y1="164" x2="558" y2="200" stroke="#555555" stroke-width="1.8" marker-end="url(#ah)"/>
 <text x="528" y="176" font-size="11" font-weight="normal" text-anchor="middle" fill="#666666" font-family="Segoe UI, Microsoft YaHei, sans-serif">PDF 页</text>
 <line x1="768" y1="255" x2="796" y2="255" stroke="#555555" stroke-width="1.8" marker-end="url(#ah)"/>

@@ -135,7 +135,7 @@ def svg():
     y = 210
     o.append(box(X0 + 250, y, 240, 90, "VLM-OCR 转录", ["逐页：p####.md", "保留 LaTeX / 图 / 脚注"], C_PROC))
     o.append(box(X0 + 520, y, 210, 90, "逐页 Markdown", ["文件名 = PDF 页号", "★ 页码对齐的锚"], C_ART))
-    o.append(box(X0 + 760, y, 230, 90, "G2 OCR 可复现性", ["模型版本/提示词/重跑", "抽检记录（文档未定）"], C_GAP, dashed=True))
+    o.append(box(X0 + 760, y, 230, 90, "边界：转录 = 黑箱（VLM）", ["幻觉只能压低，不能消除", "视觉核对 + 留痕"], C_ART))
     o.append(arrow(X0 + 190 + 30, y - 46, X0 + 250 + 30, y - 10, label="PDF 页"))
     o.append(arrow(X0 + 490, y + 45, X0 + 518, y + 45))
     o.append(arrow(X0 + 730, y + 45, X0 + 758, y + 45, dashed=True, label="校验"))
