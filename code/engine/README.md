@@ -17,6 +17,7 @@
 | `mcp.py` | MCP server（`kl_*` 工具） |
 | `cli.py` | 命令行（与 MCP 同一实现，打印 JSON） |
 | `viz.py` | 2D 图导出（PNG / SVG / HTML） |
+| `view.py` | `kl view`：把 graph.json 渲染成**自包含的交互式 HTML**（交付物；内联 force-graph + 数据，离线可用） |
 
 `lean-probes/` 是 Lean 侧探针：`DeclSigRanges.lean`（A/B 签名范围）、`StructEdges.lean`
 （I/R 结构边）、`ContentSupport.lean`（基底候选生成）。图的四层边全部由它们提供数据。
@@ -42,6 +43,7 @@ python -m kl.cli doctor               # 14 项体检
 python -m kl.cli sections             # 有哪些节的清单
 python -m kl.cli check 19 --with-dup  # 四判据 + 判重（不 --update 就只报不改）
 python -m kl.cli graph                # 图 + 断言
+python -m kl.cli view                 # 生成 knowledge/pipeline/graph-view.html（交付物）
 ```
 
 CLI 子命令：`sections · doctor · config · stats · next · status · book · book-build ·

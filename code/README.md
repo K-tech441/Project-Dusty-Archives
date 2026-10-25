@@ -47,6 +47,7 @@ examples/munkres-2e/    实例 pack 样本：book-profile.json + 契约补充 + 
 python -m kl.cli config    # 打印解析后的 书 id / 库名 / 清单目录 / 图 / 术语表 / 页码索引
 python -m kl.cli doctor    # 体检：profile 路径 + 引擎产物（聚合/探针/.ilean/图/判重记录）
 python -m kl.cli graph     # 四层边图 + 15 条机械断言
+python -m kl.cli view      # 生成自包含的交互式原子图 HTML（交付物，可在预览侧栏打开）
 ```
 
 ## 版本口径

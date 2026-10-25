@@ -21,6 +21,7 @@
     python -m kl.cli figure 78 [--dpi 300]
     python -m kl.cli sync-root
     python -m kl.cli probes          # 生成探针的模块表（.probe/modules.json）
+    python -m kl.cli view [--out p]   # 生成自包含的交互式原子图 HTML（交付物）
 """
 
 from __future__ import annotations
@@ -38,6 +39,9 @@ def main(argv: list[str] | None = None) -> int:
 
     sub.add_parser("sections")
     sub.add_parser("config")
+    p = sub.add_parser("view")
+    p.add_argument("--out", default="",
+                   help="输出 HTML 路径（空 = graph.json 同目录的 graph-view.html）")
     sub.add_parser("doctor")
     sub.add_parser("stats")
     sub.add_parser("next")
@@ -100,6 +104,9 @@ def main(argv: list[str] | None = None) -> int:
         print(mcp.kl_sections())
     elif args.cmd == "config":
         print(json.dumps(config.summary(), ensure_ascii=False, indent=2))
+    elif args.cmd == "view":
+        from kl import view as V
+        print(json.dumps(V.render(out=args.out or None), ensure_ascii=False, indent=2))
     elif args.cmd == "doctor":
         print(json.dumps(checks.doctor(checks.DEFAULT_LEAN_ROOT),
                          ensure_ascii=False, indent=2))

@@ -101,6 +101,7 @@ export KL_PROFILE=<实例仓库>/knowledge/book-profile.json
 python -m kl.cli config       # 配置解析对不对（排障第一站）
 python -m kl.cli doctor       # 14 项机械体检
 python -m kl.cli graph        # 图 + 15 条断言
+python -m kl.cli view         # 生成交互式原子图 HTML（自包含；用预览侧栏打开）
 ```
 
 细节：[code/README.md](code/README.md)（安装）· [code/examples/munkres-2e/](code/examples/munkres-2e/)（可抄的 profile 与配置片段）。
