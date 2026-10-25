@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<script>window.__errs=[];window.addEventListener('error',function(e){window.__errs.push((e.message||''));
+var b=document.getElementById('errbox'); if(b) b.textContent='JS ERROR: '+window.__errs.join(' | ');});</script>
+
+<meta charset="utf-8">
+<title>故纸堆 · 原子图</title>
+<style>
+  :root {
+    --bg: #05070b; --ink: #e9edf6; --dim: #8590a6; --dim2: #5a6478;
+    --line: rgba(255,255,255,.07);
+    --blue: #5b8cff; --gold: #f0b429; --green: #4fd18b; --violet: #b07aff; --teal: #38b2ac;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden;
+    background: radial-gradient(1400px 900px at 28% -8%, #0c1120 0%, #05070b 72%);
+    color: var(--ink); font-family: "Microsoft YaHei", "DengXian", sans-serif; }
+  #app { display: grid; grid-template-rows: 56px 1fr; height: 100vh; }
+
+  header { display: flex; align-items: center; gap: 16px; padding: 0 20px;
+    border-bottom: 1px solid var(--line); background: rgba(6,9,14,.86); backdrop-filter: blur(8px); }
+  .brand { font-family: KaiTi, "楷体", serif; font-size: 24px; letter-spacing: .10em; }
+  .brand i { font-family: Consolas, monospace; font-style: normal; font-size: 10.5px;
+    color: var(--dim2); letter-spacing: .2em; margin-left: 10px; }
+  .sep { width: 1px; height: 22px; background: var(--line); }
+  #q { background: #0c1018; border: 1px solid var(--line); color: var(--ink); border-radius: 8px;
+    padding: 8px 12px; width: 238px; outline: none; font-size: 13px; transition: border-color .15s, box-shadow .15s; }
+  #q:focus { border-color: rgba(91,140,255,.6); box-shadow: 0 0 0 3px rgba(91,140,255,.10); }
+  .chips { display: flex; gap: 7px; }
+  .chip { font-size: 12px; color: var(--dim); border: 1px solid var(--line); border-radius: 999px;
+    padding: 4px 11px; cursor: pointer; user-select: none; transition: all .15s; white-space: nowrap; }
+  .chip:hover { color: var(--ink); border-color: rgba(255,255,255,.18); }
+  .chip.on { color: #dbe6ff; border-color: rgba(91,140,255,.42); background: rgba(91,140,255,.09); }
+  .chip .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+  .spacer { flex: 1; }
+  .stat { font-family: Consolas, monospace; font-size: 11.5px; color: var(--dim2); letter-spacing: .07em; white-space: nowrap; }
+  .stat b { color: #cfd8ea; font-weight: 600; }
+  .stat em { color: var(--gold); font-style: normal; }
+
+  main { display: grid; grid-template-columns: 1fr 424px; min-height: 0; }
+  #stage { position: relative; min-width: 0; }
+  #stage canvas { display: block; }
+  #hint { position: absolute; left: 20px; bottom: 16px; font-family: Consolas, monospace;
+    font-size: 11px; color: rgba(133,144,166,.65); letter-spacing: .04em; pointer-events: none; }
+  #legend { position: absolute; right: 18px; bottom: 16px; display: flex; gap: 14px;
+    font-family: Consolas, monospace; font-size: 11px; color: var(--dim2); pointer-events: none; }
+  #legend span { display: flex; align-items: center; gap: 6px; }
+  #legend i { width: 7px; height: 7px; border-radius: 50%; }
+
+  aside { border-left: 1px solid var(--line); background: linear-gradient(180deg, #0a0e16, #06090e);
+    padding: 22px 24px 20px; overflow-y: auto; }
+  aside::-webkit-scrollbar { width: 8px; }
+  aside::-webkit-scrollbar-thumb { background: rgba(255,255,255,.09); border-radius: 4px; }
+  .placeholder { color: var(--dim2); font-size: 12.5px; line-height: 2.15; }
+  .placeholder b { color: #b9c6dd; font-weight: 500; }
+  .placeholder kbd { font-family: Consolas, monospace; font-size: 10.5px; color: var(--dim);
+    border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tag { font-family: Consolas, monospace; font-size: 10.5px; letter-spacing: .08em;
+    padding: 2px 8px; border-radius: 4px; }
+  .tag.kind { color: #a9c3ff; background: rgba(91,140,255,.15); }
+  .tag.verified { color: #7fe3ae; background: rgba(79,209,139,.13); }
+  .tag.partial { color: #ffc46b; background: rgba(240,180,41,.13); }
+  .tag.tier { color: #cfc4ad; background: rgba(207,196,173,.10); }
+  h2 { margin: 14px 0 4px; font-family: KaiTi, "楷体", serif; font-size: 35px; font-weight: 400;
+    letter-spacing: .03em; line-height: 1.22; }
+  .bookref { color: var(--dim2); font-size: 12px; line-height: 1.65; margin-bottom: 16px; }
+  .statement { font-size: 14.5px; line-height: 2.05; color: #ccd5e8; white-space: pre-wrap;
+    border-top: 1px solid var(--line); padding-top: 15px; }
+  .meta { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 14px;
+    font-family: Consolas, monospace; font-size: 11.5px; color: var(--dim2); line-height: 2; }
+  .meta b { color: #c3cede; font-weight: 500; }
+  .meta .lean { color: #9fc1ff; }
+  .neigh { margin-top: 18px; }
+  .neigh h3 { font-size: 11px; letter-spacing: .16em; color: var(--dim2); font-weight: 500; margin: 0 0 8px; }
+  .neigh a { display: flex; justify-content: space-between; gap: 10px; font-size: 12.5px;
+    color: #9fb0cd; padding: 5px 0; cursor: pointer; text-decoration: none;
+    border-bottom: 1px dashed rgba(255,255,255,.05); transition: color .12s; }
+  .neigh a:hover { color: #fff; }
+  .neigh a .id { font-family: Consolas, monospace; font-size: 11px; color: var(--dim2); flex: none; }
+  .neigh a .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: right; }
+</style>
+</head>
+<body>
+<div id="errbox" style="position:fixed;left:10px;top:66px;z-index:99;color:#ff8b8b;font:12px Consolas;white-space:pre-wrap;max-width:1250px;pointer-events:none"></div>
+<div id="app">
+  <header>
+    <div class="brand">故纸堆<i>ATOM GRAPH</i></div>
+    <div class="sep"></div>
+    <input id="q" placeholder="搜索原子（19.6T / 积拓扑 / 陈述片段）">
+    <div class="chips">
+      <div class="chip on" data-layer="A"><span class="dot" style="background:var(--blue)"></span>A 陈述层</div>
+      <div class="chip on" data-layer="B"><span class="dot" style="background:var(--gold)"></span>B 证明层</div>
+      <div class="chip" id="onlySel">只看选中邻居</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="stat" id="stat"></div>
+  </header>
+  <main>
+    <div id="stage">
+      <div id="hint">滚轮缩放 · 拖动平移 · 悬停看详情 · 点击固定 · 每列 = 依赖深度 L0 → L7</div>
+      <div id="legend">
+        <span><i style="background:var(--blue)"></i>定义</span>
+        <span><i style="background:var(--gold)"></i>定理</span>
+        <span><i style="background:var(--teal)"></i>引理</span>
+        <span><i style="background:var(--violet)"></i>例子</span>
+        <span><i style="background:var(--green)"></i>verified</span>
+      </div>
+    </div>
+    <aside id="panel">
+      <div class="placeholder">
+        悬停任意节点，查看该原子在书里的<b>自然语义内容</b>：<br>
+        中文陈述 · 书中位置 · Lean 全限定名 · 出入边。<br><br>
+        节点 = 书上的原子；边 = Lean 源码里的提及关系；<br>
+        <span style="color:var(--blue)">蓝色边</span> = 陈述层（A），
+        <span style="color:var(--gold)">金色边</span> = 证明层（B）。<br><br>
+        选中后，边上的<b>流动粒子</b>指示依赖方向：<kbd>存在</kbd> → <kbd>依赖</kbd>
+      </div>
+    </aside>
+  </main>
+</div>
+<script src="/plugins/graph-panel/force-graph.min.js"></script>
+<script>
+window.__start = function () {
+  const A = window.GRAPH.atom_graph;
+  const TIERS = A.tiers || {};
+  const STATS = A.stats || {};
+  const KIND_COLOR = { definition: '#5b8cff', theorem: '#f0b429', lemma: '#38b2ac', example: '#b07aff' };
+  const KIND_NAME = { definition: '定义', theorem: '定理', lemma: '引理', example: '例子' };
+
+  const nodes = Object.values(A.nodes).map((n) => ({
+    id: n.id, label: n.label || n.id, kind: n.kind, status: n.status,
+    statement: n.statement || '', book_ref: n.book_ref || '',
+    primary: n.primary || '', decls: n.decls || [],
+    tier: TIERS[n.id] != null ? TIERS[n.id] : 0,
+    color: KIND_COLOR[n.kind] || '#8590a6',
+  }));
+  const RAW = A.edges.map((e) => ({ src: e.src, dst: e.dst, layers: e.layers || '' }));
+  const links = RAW.map((e) => ({ source: e.src, target: e.dst, layers: e.layers }));
+
+  const byId = new Map(nodes.map((n) => [n.id, n]));
+  const outLinks = new Map(), inLinks = new Map();
+  RAW.forEach((l) => {
+    if (!outLinks.has(l.src)) outLinks.set(l.src, []);
+    if (!inLinks.has(l.dst)) inLinks.set(l.dst, []);
+    outLinks.get(l.src).push(l);
+    inLinks.get(l.dst).push(l);
+  });
+  const degOf = (id) => (outLinks.get(id) || []).length + (inLinks.get(id) || []).length;
+  const neighborsOf = (id) => {
+    const s = new Set();
+    (outLinks.get(id) || []).forEach((l) => s.add(l.dst));
+    (inLinks.get(id) || []).forEach((l) => s.add(l.src));
+    return s;
+  };
+  const isNeighbor = (a, b) => neighborsOf(a).has(b);
+
+  const state = { layers: { A: true, B: true }, hover: null, lock: null, onlyNb: false, shot: false };
+
+  // ================================================================ 分层布局（神经网络式）
+  // 列 = 依赖深度；列内节点等距、按高度居中。不用力导向：确定性、打开即成形。
+  const stage = document.getElementById('stage');
+  const box = () => ({ w: stage.clientWidth || 1400, h: stage.clientHeight || 1000 });
+  const tierList = Array.from(new Set(nodes.map((n) => n.tier))).sort((a, b) => a - b);
+  const groups = new Map(tierList.map((t) => [t, []]));
+  nodes.forEach((n) => groups.get(n.tier).push(n));
+  const secOf = (id) => parseFloat(String(id)) || 0;
+  groups.forEach((list) => list.sort((a, b) => secOf(a.id) - secOf(b.id) || (a.id < b.id ? -1 : 1)));
+
+  const NW = box().w, NH = box().h;
+  const COL_W = Math.max(150, Math.min(240, (NW - 210) / Math.max(1, tierList.length - 1)));
+  const MAX_N = Math.max(...tierList.map((t) => groups.get(t).length));
+  const GAP = Math.min(38, (NH - 300) / Math.max(1, MAX_N - 1));
+  const COL_X = tierList.map((_, i) => -((tierList.length - 1) * COL_W) / 2 + i * COL_W);
+  const colOf = new Map(tierList.map((t, i) => [t, i]));
+  const topY = -((MAX_N - 1) * GAP) / 2;   // 最长列的顶/底
+  const botY = -topY;
+
+  groups.forEach((list, tier) => {
+    const n = list.length;
+    const cy = ((n - 1) * GAP) / 2;
+    list.forEach((node, i) => {
+      node.fx = COL_X[colOf.get(tier)] + (i % 2 === 0 ? -5 : 5);
+      node.fy = cy - i * GAP;
+      node.x = node.fx;   // 预置坐标：d3 初始化前就有效，避免 NaN 变换 / 首帧黑屏
+      node.y = node.fy;
+    });
+  });
+
+  // ================================================================ 头部统计
+  const aCount = STATS.edges ? (STATS.edges.layers.A || 0) : 0;
+  const bCount = STATS.edges ? (STATS.edges.layers.B || 0) : 0;
+  document.getElementById('stat').innerHTML =
+    'ATOMS <b>' + nodes.length + '</b> · EDGES <b>' + links.length + '</b> · ' +
+    'DEPTH <em>' + tierList.length + '</em> · A <b>' + aCount + '</b> · B <b>' + bCount + '</b>';
+
+  // ================================================================ 图
+  const G = ForceGraph()(stage)
+    .width(NW).height(NH)
+    .autoPauseRedraw(false)
+    .graphData({ nodes, links })
+    .backgroundColor('#05070b')
+    .enableNodeDrag(false)
+    .nodeRelSize(1)
+    .nodeLabel(() => '')
+    .nodePointerAreaPaint((node, color, ctx) => {
+      ctx.fillStyle = color;
+      ctx.beginPath(); ctx.arc(node.x, node.y, 8, 0, 2 * Math.PI); ctx.fill();
+    })
+    .nodeCanvasObjectMode(() => 'replace')
+    .nodeCanvasObject(drawNode)
+    .linkColor(colorOfLink)
+    .linkWidth(widthOfLink)
+    .linkCurvature(0.10)
+    .linkVisibility((l) => linkVisible(l))
+    .nodeVisibility((n) => nodeVisible(n))
+    .linkDirectionalArrowLength(3.2)
+    .linkDirectionalArrowRelPos(0.92)
+    .linkDirectionalArrowColor(arrowColor)
+    .linkDirectionalParticles(particleOfLink)
+    .linkDirectionalParticleWidth(1.9)
+    .linkDirectionalParticleColor(particleColor)
+    .linkDirectionalParticleSpeed(0.0014)
+    .onNodeHover((n) => { state.hover = n ? n.id : null; refresh(); paintPanel(); })
+    .onNodeClick((n) => { state.lock = state.lock === n.id ? null : n.id; state.hover = state.lock; refresh(); paintPanel(); })
+    .onBackgroundClick(() => { state.lock = null; refresh(); paintPanel(); })
+    .cooldownTicks(0);
+  window.addEventListener('resize', () => { const b = box(); G.width(b.w).height(b.h); });
+  // 必须延迟：同步调用时 d3 还没把 fx/fy 落成 x/y，zoomToFit 会算出 NaN 变换（画布全黑）
+  setTimeout(() => { G.zoomToFit(0, 70); }, 250);
+
+  // ================================================================ 画布
+  G.onRenderFramePre((ctx, scale) => {
+    try { ctx.save();
+    tierList.forEach((t, i) => {
+      const x = COL_X[i];
+      const bandW = Math.max(96, Math.min(COL_W * 0.92, 150));
+      // 列带
+      ctx.fillStyle = i % 2 ? 'rgba(255,255,255,.017)' : 'rgba(255,255,255,.006)';
+      ctx.fillRect(x - bandW / 2, topY - 130, bandW, (botY - topY) + 250);
+      ctx.strokeStyle = 'rgba(255,255,255,.055)';
+      ctx.lineWidth = 1 / scale;
+      ctx.beginPath();
+      ctx.moveTo(x - bandW / 2, topY - 130); ctx.lineTo(x - bandW / 2, botY + 120);
+      ctx.stroke();
+      // 列标（统一顶部对齐）
+      const n = groups.get(t).length;
+      ctx.textAlign = 'center';
+      ctx.font = (14 / scale) + 'px Consolas, monospace';
+      ctx.fillStyle = 'rgba(168,180,202,.9)';
+      ctx.fillText('L' + t, x, topY - 96);
+      ctx.font = (10.5 / scale) + 'px Consolas, monospace';
+      ctx.fillStyle = 'rgba(106,118,142,.95)';
+      ctx.fillText(n + ' atoms', x, topY - 74);
+      ctx.textAlign = 'left';
+    });
+    ctx.restore(); } catch (e) { showErr("frame: " + e.message); }
+  });
+
+  function showErr(m) { var b = document.getElementById("errbox"); if (b) b.textContent = "JS ERROR: " + m; }
+
+  function drawNode(node, ctx, scale) {
+    const active = state.hover || state.lock;
+    const isSel = !!active && node.id === active;
+    const isNb = !!active && isNeighbor(active, node.id);
+    const dim = !!active && !isSel && !isNb;
+    const deg = degOf(node.id);
+    const r = (5.0 + Math.min(4.2, deg * 0.17)) * (isSel ? 1.25 : 1);
+    if (!isFinite(node.x) || !isFinite(node.y) || !isFinite(r)) {
+      if (!state.__bad) { state.__bad = true; showErr('bad node ' + node.id + ' x=' + node.x + ' y=' + node.y + ' r=' + r + ' fx=' + node.fx + ' fy=' + node.fy + ' tier=' + node.tier); }
+      return;
+    }
+
+    if (!dim) {
+      const grd = ctx.createRadialGradient(node.x, node.y, 0, node.x, node.y, r * 5);
+      grd.addColorStop(0, hexA(node.color, isSel || isNb ? 0.34 : 0.20));
+      grd.addColorStop(1, hexA(node.color, 0));
+      ctx.fillStyle = grd;
+      ctx.beginPath(); ctx.arc(node.x, node.y, r * 5, 0, 2 * Math.PI); ctx.fill();
+    }
+    ctx.globalAlpha = dim ? 0.15 : 1;
+    ctx.beginPath(); ctx.arc(node.x, node.y, r, 0, 2 * Math.PI);
+    ctx.fillStyle = node.color; ctx.fill();
+    if (isSel) {
+      ctx.beginPath(); ctx.arc(node.x, node.y, r + 3.4, 0, 2 * Math.PI);
+      ctx.strokeStyle = 'rgba(255,255,255,.92)'; ctx.lineWidth = 1.6 / scale; ctx.stroke();
+    } else if (node.status === 'partial') {
+      ctx.beginPath(); ctx.arc(node.x, node.y, r + 2.4, 0, 2 * Math.PI);
+      ctx.strokeStyle = 'rgba(240,180,41,.8)'; ctx.lineWidth = 1 / scale; ctx.stroke();
+    }
+    const nbCount = active ? neighborsOf(active).size : 0;
+    const showNbLabel = nbCount <= 22;   // 度高（如「拓扑」76 条边）时避免标签刷屏
+    const showLabel = isSel || (isNb && showNbLabel) || (scale > 1.6 && !dim);
+    if (showLabel) {
+      const fs = Math.max(2.6, 12 / scale);
+      ctx.font = (isSel ? '600 ' : '') + fs + 'px "Microsoft YaHei", sans-serif';
+      ctx.fillStyle = isSel ? '#ffffff' : 'rgba(208,218,238,.9)';
+      ctx.fillText(node.label, node.x + r + 4, node.y + fs * 0.36);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  function touches(l, id) {
+    const s = l.source && l.source.id ? l.source.id : l.source;
+    const t = l.target && l.target.id ? l.target.id : l.target;
+    return s === id || t === id;
+  }
+  function hasA(l) { return (l.layers || '').indexOf('A') >= 0; }
+  function colorOfLink(l) {
+    const active = state.hover || state.lock;
+    if (active) {
+      if (touches(l, active)) return hasA(l) ? 'rgba(140,180,255,.92)' : 'rgba(248,208,96,.9)';
+      return hasA(l) ? 'rgba(91,140,255,.10)' : 'rgba(240,180,41,.075)';
+    }
+    return hasA(l) ? 'rgba(91,140,255,.30)' : 'rgba(240,180,41,.20)';
+  }
+  function widthOfLink(l) {
+    const active = state.hover || state.lock;
+    if (active && touches(l, active)) return 1.8;
+    return hasA(l) ? 1.05 : 0.95;
+  }
+  function arrowColor(l) {
+    return hasA(l) ? 'rgba(160,195,255,.75)' : 'rgba(248,214,130,.7)';
+  }
+  function particleOfLink(l) {
+    if (!linkVisible(l)) return 0;
+    if (state.lock) return touches(l, state.lock) ? 2 : 0;
+    return 1;
+  }
+  function particleColor(l) { return hasA(l) ? '#9dbcff' : '#f5d27a'; }
+  function linkVisible(l) {
+    const s = l.layers || '';
+    const a = s.indexOf('A') >= 0, b = s.indexOf('B') >= 0;
+    if (!a && !b) return true;
+    return (a && state.layers.A) || (b && state.layers.B);
+  }
+  function nodeVisible(n) {
+    if (!state.onlyNb || !state.lock) return true;
+    return n.id === state.lock || isNeighbor(state.lock, n.id);
+  }
+  function hexA(hex, a) {
+    const h = hex.replace('#', '');
+    return 'rgba(' + parseInt(h.substring(0, 2), 16) + ',' + parseInt(h.substring(2, 4), 16) + ',' +
+      parseInt(h.substring(4, 6), 16) + ',' + a + ')';
+  }
+  function refresh() {
+    G.nodeColor(G.nodeColor()).linkColor(G.linkColor()).linkWidth(G.linkWidth())
+      .linkDirectionalParticles(G.linkDirectionalParticles())
+      .linkDirectionalArrowColor(G.linkDirectionalArrowColor())
+      .linkVisibility(G.linkVisibility()).nodeVisibility(G.nodeVisibility());
+  }
+
+  // ================================================================ 右侧详情
+  const panel = document.getElementById('panel');
+  const placeholderHtml = panel.innerHTML;
+  function paintPanel() {
+    const id = state.lock || state.hover;
+    if (!id || !byId.has(id)) { panel.innerHTML = placeholderHtml; return; }
+    const n = byId.get(id);
+    const outs = Array.from(new Set((outLinks.get(id) || []).map((l) => l.dst)));
+    const ins = Array.from(new Set((inLinks.get(id) || []).map((l) => l.src)));
+    panel.innerHTML =
+      '<div class="tags"><span class="tag kind">' + (KIND_NAME[n.kind] || n.kind) + '</span>' +
+      '<span class="tag ' + (n.status === 'verified' ? 'verified' : 'partial') + '">' + n.status + '</span>' +
+      '<span class="tag tier">L' + n.tier + ' · 依赖深度</span></div>' +
+      '<h2>' + esc(n.label) + '</h2>' +
+      '<div class="bookref">' + esc(n.book_ref || '') + ' · 原子 ' + esc(n.id) + '</div>' +
+      '<div class="statement">' + esc(n.statement || '（无陈述）') + '</div>' +
+      '<div class="meta">LEAN <b class="lean">' + esc(n.primary || '—') + '</b><br>' +
+      '声明 <b>' + (n.decls ? n.decls.length : 0) + '</b> · 出边 <b>' + outs.length +
+      '</b> · 入边 <b>' + ins.length + '</b> · 度 <b>' + (outs.length + ins.length) + '</b></div>' +
+      neighHtml('它依赖（出边 →）', outs) + neighHtml('被依赖（← 入边）', ins);
+    panel.querySelectorAll('a[data-id]').forEach((a) => {
+      a.addEventListener('click', () => {
+        const t = byId.get(a.dataset.id);
+        if (!t) return;
+        state.lock = t.id; state.hover = t.id; refresh(); paintPanel();
+        G.centerAt(t.fx, t.fy, 450); G.zoom(1.6, 450);
+      });
+    });
+  }
+  function neighHtml(title, ids) {
+    if (!ids.length) return '';
+    return '<div class="neigh"><h3>' + title + '</h3>' + ids.slice(0, 14).map((i) => {
+      const t = byId.get(i);
+      return '<a data-id="' + esc(i) + '"><span class="id">' + esc(i) + '</span>' +
+        '<span class="t">' + esc(t ? t.label : i) + '</span></a>';
+    }).join('') + (ids.length > 14 ? '<a style="color:var(--dim2);cursor:default"><span class="id">…</span><span class="t">共 ' + ids.length + ' 条</span></a>' : '') + '</div>';
+  }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+
+  // ================================================================ 交互
+  document.querySelectorAll('.chip[data-layer]').forEach((el) => {
+    el.addEventListener('click', () => {
+      const k = el.dataset.layer;
+      state.layers[k] = !state.layers[k];
+      el.classList.toggle('on', state.layers[k]);
+      refresh();
+    });
+  });
+  document.getElementById('onlySel').addEventListener('click', (e) => {
+    state.onlyNb = !state.onlyNb;
+    e.currentTarget.classList.toggle('on', state.onlyNb);
+    refresh();
+  });
+  document.getElementById('q').addEventListener('input', (e) => {
+    const q = e.target.value.trim().toLowerCase();
+    if (!q) return;
+    const hit = nodes.find((n) => n.id.toLowerCase() === q) ||
+      nodes.find((n) => (n.id + n.label + n.statement + n.book_ref).toLowerCase().includes(q));
+    if (hit) {
+      state.lock = hit.id; state.hover = hit.id; refresh(); paintPanel();
+      G.centerAt(hit.fx, hit.fy, 550); G.zoom(1.6, 550);
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { state.lock = null; state.hover = null; refresh(); paintPanel(); }
+    if (e.key === '/') { e.preventDefault(); document.getElementById('q').focus(); }
+  });
+
+  // 演示/截图：自动选中一个内容丰富的原子
+  function selectForShot() {
+    if (state.shot) return;
+    const want = location.hash.replace('#', '') || '13.2';
+    const n = byId.get(want) || byId.get('19.6T') || byId.get('18.4T') || nodes[nodes.length - 1];
+    if (!n) return;
+    state.shot = true;
+    state.lock = n.id; state.hover = n.id;
+    refresh(); paintPanel();
+  }
+  setTimeout(selectForShot, 900);
+};
+</script>
+<script>
+(async function () {
+  try {
+    const r = await fetch('/plugins/graph-panel/graph.json', { cache: 'no-store' });
+    if (!r.ok) throw new Error('graph.json HTTP ' + r.status);
+    window.GRAPH = await r.json();
+    window.__start();
+  } catch (e) {
+    const p = document.getElementById('panel');
+    if (p) p.innerHTML = '<pre style="color:#ff9b9b;font:12.5px Consolas;white-space:pre-wrap">图数据没接上：' +
+      (e && e.message || e) + '</pre>';
+  }
+})();
+</script>
+</body>
+</html>

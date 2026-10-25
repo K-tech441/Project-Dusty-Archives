@@ -10,9 +10,21 @@
  */
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 export const name = 'graph-panel'
 export const inject = ['webServer']
+
+const HERE = path.dirname(fileURLToPath(import.meta.url))
+const VIEWER_DIR = path.join(HERE, 'viewer')
+
+// 前端查看器（viewer/）与它的依赖库都是本插件自带的静态文件，由宿主路由提供：
+//   /plugins/graph-panel/viewer.html            画布查看器（force-graph，神经网络式分层）
+//   /plugins/graph-panel/force-graph.min.js     vendored 的 force-graph UMD
+const STATIC_ROUTES = {
+  '/plugins/graph-panel/viewer.html': { file: 'index.html', type: 'text/html; charset=utf-8' },
+  '/plugins/graph-panel/force-graph.min.js': { file: 'force-graph.min.js', type: 'application/javascript; charset=utf-8' },
+}
 
 const DEFAULTS = {
   enabled: true,
@@ -57,6 +69,33 @@ async function graphFile(config) {
 export function apply(ctx, rawConfig) {
   const config = resolveConfig(rawConfig)
   if (!config.enabled) return
+
+  // ---- 静态文件：查看器页面 + vendored 库
+  for (const [route, spec] of Object.entries(STATIC_ROUTES)) {
+    ctx.effect(() => ctx.webServer.register({
+      kind: 'exact',
+      path: route,
+      async handler(req, res) {
+        if (req.method !== 'GET' && req.method !== 'HEAD') {
+          res.statusCode = 405
+          res.setHeader('content-type', 'text/plain; charset=utf-8')
+          res.end('method not allowed')
+          return
+        }
+        try {
+          const body = await fs.readFile(path.join(VIEWER_DIR, spec.file))
+          res.statusCode = 200
+          res.setHeader('content-type', spec.type)
+          res.setHeader('cache-control', 'no-store')
+          res.end(req.method === 'HEAD' ? undefined : body)
+        } catch (error) {
+          res.statusCode = 404
+          res.setHeader('content-type', 'text/plain; charset=utf-8')
+          res.end('missing viewer asset: ' + spec.file + ' (' + String(error && error.message || error) + ')')
+        }
+      },
+    }))
+  }
 
   ctx.effect(() => ctx.webServer.register({
     kind: 'exact',

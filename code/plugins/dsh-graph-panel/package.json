@@ -1,9 +1,9 @@
 {
   "name": "@local/dsh-graph-panel",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
-  "description": "在设置面板里查看 Munkres 形式化库的四层声明图（读 knowledge/pipeline/graph.json）：可缩放/拖拽/搜索/按模块过滤。",
+  "description": "设置面板里的「知识图谱」查看器：神经网络式分层的原子图（列 = 依赖深度），悬停显示原子自然语义内容，有向边用箭头 + 流动粒子表达。",
   "exports": {
     ".": "./index.js",
     "./client": "./client.js",
@@ -13,6 +13,8 @@
   "files": [
     "index.js",
     "client.js",
+    "viewer/index.html",
+    "viewer/force-graph.min.js",
     "cordis.patch.yml",
     "locale/*.json",
     "icon.svg"
@@ -29,6 +31,6 @@
   },
   "meta": {
     "title": "知识图谱",
-    "description": "Munkres 形式化库的四层声明图：节点=声明，边=提及（A/B/I/R），可缩放拖拽搜索。"
+    "description": "故纸堆原子图：列 = 依赖深度 L0→L7，节点 = 书上的原子；悬停看陈述/位置/Lean 名；有向边用箭头 + 流动粒子。"
   }
 }
