@@ -18,12 +18,13 @@
 
 ## 1. 书配置 + 页码索引
 
-1. **填书配置**（纯数据，格式见 [book-config.md](book-config.md)）：
-   - `sources`：每本书（英文原书/中译本）的 PDF 路径、`kind`、`printed_to_pdf` 偏移、md 目录；
-   - `chapters[]`（可选）：按**物理装订顺序**列章，章号照抄（可与页序不一致，如 13/14 章对换）；
-   - `sections[]`：每节抄两个数——英文印刷页范围、中译印刷页范围；**同样按物理页序排**，
-     不要求节号递增；
-   - 填完跑校验 V1–V9，**重点是 V5（节标题页在范围内）和 V1/V8（顺序按页序、不按编号）**。
+1. **填书配置**（纯数据，格式见 [book-config.md](book-config.md)）。两种等价填法：
+   - **人填式**（扫描件 / 无 PDF 文字层）：`sections[]` 里抄每节的印刷页范围，跑校验 V1–V9；
+   - **提取式**（PDF 有文字层，本实例实况）：只填 `sources` 路径 + `folio.patterns` +
+     `sections.patterns`，由 `book-build` 从页眉机械提取范围。
+   共同点：`chapters[]`（可选）按**物理装订顺序**列章，章号照抄（可与页序不一致，如 13/14 章对换）；
+   `sections[]` **同样按物理页序排**，不要求节号递增；**重点是 V5（节标题页在范围内）和
+   V1/V8（顺序按页序、不按编号）**。
 2. 机械生成页码索引；抽查 3–5 个条目（节标题、首个定义、图/表）核对页号。
 3. 硬规则：**之后所有页码引用只许来自索引**，禁止凭印象。
 
@@ -106,3 +107,27 @@ VLM 幻觉被当成原文（关键位置没核对、或核对了但没留痕）�
 | 基底库 | 借用的库、A 层允许名字、基底扩展流程 |
 | Lean 工具链 | 版本、依赖、LSP 配置、内存策略 |
 | 呈现配置 | 层颜色/标签语言/默认视图/模块过滤规则 |
+
+## 8. 接上 core 插件（本书 profile）
+
+core 插件只认一份 `book-profile.json`（字段见 [plugin-api.md](plugin-api.md) §3；字段名不猜，
+缺了直接拒绝启动 / 体检报红）。落地顺序：
+
+1. 在实例仓库里写 `knowledge/book-profile.json`：
+   `book_id` / `title` / `book_config`；`paths`（`repo` 相对 profile 文件，其余相对仓库根；
+   清单目录、基底、图、术语表、入序表、转录目录）；`docs`（权威文档指针）；`lean.lib` +
+   `toolchain_file`；`cli.module`（判据引擎模块名）；`atoms.required_fields`；
+   `judge`（基底候选 / 禁提清单 / 扩展）；`env`（库外资源路径、书 id）；
+   `contract_extras`（项目补充契约）；`render`。
+2. 写 `contract_extras` 指向的补充契约（本书特有：仓库/路径、章节特例如 13/14 章对换、
+   命令差异、基底变更规程、工作基准）——**不要重复 core 通用规则**。
+3. 在 DSH profile 里装 `@local/dsh-pipeline-core`，`config.profile` 指向这份 profile；
+   重启 DSH（契约在插件加载时固化）。
+4. 验收：`pipeline_doctor` 两段全绿（书 profile 路径全 ✓ + 判据引擎全 ✓），首行打印
+   `core 契约 vN`；`pipeline_gate(某个已完成节)` 输出与旧实例一致。
+5. 负向自检：临时把 profile 里某个路径改错 ⟹ doctor 必须红且指出字段名；
+   删一个必填字段 ⟹ 插件必须拒绝启动。改回来再重启。
+
+```text
+只写 pack（profile + 补充契约 + 可选判据扩展），core 一行不改 —— 这是「换一本书」的验收标准。
+```
