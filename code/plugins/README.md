@@ -9,7 +9,7 @@
 | `dsh-mcp-kl` | 知识层 MCP（`kl_*` 工具） | `python` / `PYTHONPATH` / `KL_PROFILE` / `KL_PYLIBS` |
 | `dsh-mcp-lean` | Lean LSP MCP（goal / 诊断 / multi_attempt / 搜索） | `--lean-project-path`（= `profile.paths.repo`） |
 | `dsh-mcp-mathlib` | 本地 mathlib 索引 MCP（430k 声明，SQLite+FTS5） | `args` 里的索引 server 路径 |
-| `dsh-graph-panel` | 设置面板「知识图谱」查看器：神经网络式分层原子图（列 = 依赖深度 L0→L7）；悬停显示原子陈述/位置/Lean 名；有向边用箭头 + 流动粒子表达 | `profile`（图路径 = `profile.paths.graph`） |
+| `dsh-graph-panel` | 原子图**数据服务**：`/plugins/graph-panel/graph.json` + 查看器静态页。看图走 `kl view` 生成的自包含 HTML（预览侧栏）—— 设置面板画布太小，不适合 | `profile`（图路径 = `profile.paths.graph`） |
 
 ## 安装（DSH profile）
 

@@ -1,18 +1,16 @@
 {
   "name": "@local/dsh-graph-panel",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
   "type": "module",
-  "description": "设置面板里的「知识图谱」查看器：神经网络式分层的原子图（列 = 依赖深度），悬停显示原子自然语义内容，有向边用箭头 + 流动粒子表达。",
+  "description": "原子图数据服务：把 graph.json 与自包含查看器通过宿主静态路由暴露。图的正式交付走 `kl view` 生成的单文件 HTML（在预览侧栏打开）。",
   "exports": {
     ".": "./index.js",
-    "./client": "./client.js",
     "./locale/*.json": "./locale/*.json",
     "./icon": "./icon.svg"
   },
   "files": [
     "index.js",
-    "client.js",
     "viewer/index.html",
     "viewer/force-graph.min.js",
     "cordis.patch.yml",
@@ -22,15 +20,10 @@
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
-    },
-    "client": {
-      "platform": "web",
-      "immediately": true,
-      "inject": ["@deepseek-ai/dsh-client-ui-settings"]
     }
   },
   "meta": {
-    "title": "知识图谱",
-    "description": "故纸堆原子图：列 = 依赖深度 L0→L7，节点 = 书上的原子；悬停看陈述/位置/Lean 名；有向边用箭头 + 流动粒子。"
+    "title": "原子图数据服务",
+    "description": "提供 /plugins/graph-panel/graph.json 与查看器静态页。看图请用 `kl view` 生成的交付物 HTML（预览侧栏）。"
   }
 }

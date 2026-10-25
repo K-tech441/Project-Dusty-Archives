@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Knowledge Graph",
-    "description": "Dusty Archives atom graph: neural-network-style layers (columns = dependency depth L0→L7), one node per atom of the book; hover for statement/pages/Lean name; directed edges shown by arrows + flowing particles."
+    "title": "Atom Graph Data Service",
+    "description": "Serves graph.json and the viewer page over host routes. For viewing, open the self-contained HTML produced by `kl view` in the preview sidebar."
   }
 }
