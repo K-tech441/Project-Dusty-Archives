@@ -47,6 +47,10 @@ var b=document.getElementById('errbox'); if(b) b.textContent='JS ERROR: '+window
     font-family: Consolas, monospace; font-size: 11px; color: var(--dim2); pointer-events: none; }
   #legend span { display: flex; align-items: center; gap: 6px; }
   #legend i { width: 7px; height: 7px; border-radius: 50%; }
+  /* ?bare=1：只留画布（宣传图/海报用） */
+  body.bare header, body.bare #panel, body.bare #hint { display: none; }
+  body.bare #app { grid-template-rows: 1fr; }
+  body.bare main { grid-template-columns: 1fr; }
 
   aside { border-left: 1px solid var(--line); background: linear-gradient(180deg, #0a0e16, #06090e);
     padding: 22px 24px 20px; overflow-y: auto; }
@@ -124,6 +128,7 @@ var b=document.getElementById('errbox'); if(b) b.textContent='JS ERROR: '+window
 <script>window.GRAPH = __GRAPH_DATA__;</script>
 <script>
 (function () {
+  if (/[?&]bare\b/.test(location.search)) document.body.classList.add('bare');
   const A = window.GRAPH.atom_graph;
   const TIERS = A.tiers || {};
   const STATS = A.stats || {};
