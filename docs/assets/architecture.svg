@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1780" height="1340" viewBox="0 0 1780 1340">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#555555"/></marker></defs>
+<rect width="100%" height="100%" fill="white"/>
+<text x="890" y="40" font-size="22" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">Project Dusty Archives（项目：故纸堆）· 总架构</text>
+<text x="890" y="64" font-size="13" font-weight="normal" text-anchor="middle" fill="#666666" font-family="Segoe UI, Microsoft YaHei, sans-serif">PDF 教材 → 逐页转录 → 原子清单 → Lean 库（指针）→ 判据 → 图 → 面板</text>
+<rect x="18" y="100" width="232" height="860" rx="10" fill="#f4f4f4" stroke="#777777" stroke-width="1.2"/>
+<text x="134" y="124" font-size="13" font-weight="bold" text-anchor="middle" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">L7 Agent 编排（横切）</text>
+<text x="30" y="152" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">Lead：裁决 / 写作用域 / 提交</text>
+<text x="30" y="171" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">worker：一节一模块</text>
+<text x="30" y="190" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">  R 侦察 → 停 → 批准</text>
+<text x="30" y="209" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">  W 一次一个原子</text>
+<text x="30" y="228" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">  收口三步</text>
+<text x="30" y="247" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">契约注入（每次调用）</text>
+<text x="30" y="266" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">任务书（只写本节特例）</text>
+<text x="30" y="285" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">工具证据（四类计数）</text>
+<text x="30" y="304" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">停止条件（卡即停）</text>
+<text x="30" y="323" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">LSP 工具面：</text>
+<text x="30" y="342" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">  goal / multi_attempt</text>
+<text x="30" y="361" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">  search / diagnostics</text>
+<text x="30" y="380" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">MCP：kl / lean / mathlib</text>
+<text x="30" y="399" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">本地 mathlib 索引 430k</text>
+<rect x="1530" y="100" width="232" height="860" rx="10" fill="#f4f4f4" stroke="#777777" stroke-width="1.2"/>
+<text x="1646" y="124" font-size="13" font-weight="bold" text-anchor="middle" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">L8 质量与回归（横切）</text>
+<text x="1542" y="152" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">pipeline_doctor（开工）</text>
+<text x="1542" y="171" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">  13 项体检 / 全绿才开工</text>
+<text x="1542" y="190" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">pipeline_gate（收口）</text>
+<text x="1542" y="209" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">  指针 / 判据 / 双向覆盖</text>
+<text x="1542" y="228" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">新鲜度链：</text>
+<text x="1542" y="247" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">  源码→olean/ilean</text>
+<text x="1542" y="266" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">  →探针→图</text>
+<text x="1542" y="285" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">基底变更规程 + 全量回归</text>
+<text x="1542" y="304" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">verdict 来源记录</text>
+<text x="1542" y="323" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">  origin/session/pid/argv</text>
+<text x="1542" y="342" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">生成物 vs 手工物分离</text>
+<text x="1542" y="361" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">git 提交纪律</text>
+<text x="1542" y="380" font-size="11" font-weight="normal" text-anchor="start" fill="#555555" font-family="Segoe UI, Microsoft YaHei, sans-serif">回归矩阵（待建 G5）</text>
+<rect x="278" y="100" width="190" height="74" rx="8" fill="#f6eef6" stroke="#7a4a7a" stroke-width="1.6"/>
+<text x="373" y="122" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">PDF 教材</text>
+<text x="373" y="140" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">扫描件 / 文字层</text>
+<text x="373" y="158" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">页码：印刷页↔PDF页</text>
+<rect x="498" y="100" width="190" height="74" rx="8" fill="#f6eef6" stroke="#7a4a7a" stroke-width="1.6"/>
+<text x="593" y="122" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">书配置</text>
+<text x="593" y="140" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">PDF 路径 / 页码偏移</text>
+<text x="593" y="158" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">章节边界 / 语言</text>
+<rect x="718" y="100" width="200" height="74" rx="8" fill="#eef3fb" stroke="#4a6fa5" stroke-width="1.6"/>
+<text x="818" y="122" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">页码索引</text>
+<text x="818" y="140" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">book-index</text>
+<text x="818" y="158" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">机械生成, 只读</text>
+<rect x="958" y="100" width="250" height="74" rx="8" fill="#fff0f0" stroke="#cc3333" stroke-width="1.6" stroke-dasharray="6,4"/>
+<text x="1083" y="122" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">G1 书配置 schema</text>
+<text x="1083" y="140" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">字段/校验/多书共存放哪</text>
+<text x="1083" y="158" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">（文档未定）</text>
+<line x1="468" y1="137" x2="496" y2="137" stroke="#555555" stroke-width="1.8" marker-end="url(#ah)"/>
+<line x1="688" y1="137" x2="716" y2="137" stroke="#555555" stroke-width="1.8" marker-end="url(#ah)"/>
+<text x="702" y="131" font-size="11" font-weight="normal" text-anchor="middle" fill="#666666" font-family="Segoe UI, Microsoft YaHei, sans-serif">偏移</text>
+<line x1="818" y1="174" x2="818" y2="210" stroke="#555555" stroke-width="1.8" marker-end="url(#ah)"/>
+<rect x="528" y="210" width="240" height="90" rx="8" fill="#eaf6ec" stroke="#3f7f4f" stroke-width="1.6"/>
+<text x="648" y="232" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">VLM-OCR 转录</text>
+<text x="648" y="250" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">逐页：p####.md</text>
+<text x="648" y="268" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">保留 LaTeX / 图 / 脚注</text>
+<rect x="798" y="210" width="210" height="90" rx="8" fill="#eef3fb" stroke="#4a6fa5" stroke-width="1.6"/>
+<text x="903" y="232" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">逐页 Markdown</text>
+<text x="903" y="250" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">文件名 = PDF 页号</text>
+<text x="903" y="268" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">★ 页码对齐的锚</text>
+<rect x="1038" y="210" width="230" height="90" rx="8" fill="#fff0f0" stroke="#cc3333" stroke-width="1.6" stroke-dasharray="6,4"/>
+<text x="1153" y="232" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">G2 OCR 可复现性</text>
+<text x="1153" y="250" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">模型版本/提示词/重跑</text>
+<text x="1153" y="268" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">抽检记录（文档未定）</text>
+<line x1="498" y1="164" x2="558" y2="200" stroke="#555555" stroke-width="1.8" marker-end="url(#ah)"/>
+<text x="528" y="176" font-size="11" font-weight="normal" text-anchor="middle" fill="#666666" font-family="Segoe UI, Microsoft YaHei, sans-serif">PDF 页</text>
+<line x1="768" y1="255" x2="796" y2="255" stroke="#555555" stroke-width="1.8" marker-end="url(#ah)"/>
+<line x1="1008" y1="255" x2="1036" y2="255" stroke="#888888" stroke-width="1.8" stroke-dasharray="7,5" marker-end="url(#ah)"/>
+<text x="1022" y="249" font-size="11" font-weight="normal" text-anchor="middle" fill="#666666" font-family="Segoe UI, Microsoft YaHei, sans-serif">校验</text>
+<rect x="298" y="350" width="380" height="120" rx="8" fill="#eef3fb" stroke="#4a6fa5" stroke-width="1.6"/>
+<text x="488" y="372" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">原子清单 sectionNN.json  ★ 单一事实源</text>
+<text x="488" y="390" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">原子 = 定义 / 定理 / 编号例子</text>
+<text x="488" y="408" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">quote 逐字 · statement 中文 · loc</text>
+<text x="488" y="426" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">identity_decl · carrier_deps</text>
+<text x="488" y="444" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">lean: names / pointers / status</text>
+<rect x="708" y="350" width="230" height="120" rx="8" fill="#eef3fb" stroke="#4a6fa5" stroke-width="1.6"/>
+<text x="823" y="372" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">入序表</text>
+<text x="823" y="390" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">章节依赖 / 状态</text>
+<text x="823" y="408" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">done:SectionN</text>
+<rect x="968" y="350" width="290" height="96" rx="8" fill="#f6eef6" stroke="#7a4a7a" stroke-width="1.6"/>
+<text x="1113" y="372" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">原子口径（书级配置）</text>
+<text x="1113" y="390" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">哪些元素开原子</text>
+<text x="1113" y="408" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">partial 条件 / 例子规则</text>
+<rect x="298" y="482" width="380" height="84" rx="8" fill="#eef3fb" stroke="#4a6fa5" stroke-width="1.6"/>
+<text x="488" y="504" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">术语表</text>
+<text x="488" y="522" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">术语 → 原子 → 声明</text>
+<text x="488" y="540" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">跨节检索（派生视图）</text>
+<line x1="678" y1="410" x2="706" y2="410" stroke="#555555" stroke-width="1.8" marker-end="url(#ah)"/>
+<line x1="706" y1="460" x2="680" y2="460" stroke="#888888" stroke-width="1.8" stroke-dasharray="7,5" marker-end="url(#ah)"/>
+<text x="693" y="454" font-size="11" font-weight="normal" text-anchor="middle" fill="#666666" font-family="Segoe UI, Microsoft YaHei, sans-serif">派生</text>
+<rect x="298" y="620" width="210" height="110" rx="8" fill="#eef3fb" stroke="#4a6fa5" stroke-width="1.6"/>
+<text x="403" y="642" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">基底</text>
+<text x="403" y="660" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">Base.lean（唯一 mathlib 入口）</text>
+<text x="403" y="678" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">基底清单 / A 层范围</text>
+<rect x="538" y="620" width="280" height="110" rx="8" fill="#eef3fb" stroke="#4a6fa5" stroke-width="1.6"/>
+<text x="678" y="642" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">内容模块 SectionNN.lean</text>
+<text x="678" y="660" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">一节一模块</text>
+<text x="678" y="678" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">声明 + 证明（B 层自由）</text>
+<rect x="848" y="620" width="210" height="110" rx="8" fill="#eef3fb" stroke="#4a6fa5" stroke-width="1.6"/>
+<text x="953" y="642" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">指针</text>
+<text x="953" y="660" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">module + 位置 + 签名哈希</text>
+<text x="953" y="678" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">不复制源码</text>
+<rect x="1088" y="620" width="190" height="110" rx="8" fill="#eaf6ec" stroke="#3f7f4f" stroke-width="1.6"/>
+<text x="1183" y="642" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">LSP 工具面</text>
+<text x="1183" y="660" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">goal / multi_attempt</text>
+<text x="1183" y="678" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">search / diagnostics</text>
+<line x1="508" y1="675" x2="536" y2="675" stroke="#555555" stroke-width="1.8" marker-end="url(#ah)"/>
+<text x="522" y="669" font-size="11" font-weight="normal" text-anchor="middle" fill="#666666" font-family="Segoe UI, Microsoft YaHei, sans-serif">public import</text>
+<line x1="818" y1="675" x2="846" y2="675" stroke="#555555" stroke-width="1.8" marker-end="url(#ah)"/>
+<text x="832" y="669" font-size="11" font-weight="normal" text-anchor="middle" fill="#666666" font-family="Segoe UI, Microsoft YaHei, sans-serif">登记</text>
+<line x1="1058" y1="675" x2="1086" y2="675" stroke="#888888" stroke-width="1.8" stroke-dasharray="7,5" marker-end="url(#ah)"/>
+<text x="1072" y="669" font-size="11" font-weight="normal" text-anchor="middle" fill="#666666" font-family="Segoe UI, Microsoft YaHei, sans-serif">迭代</text>
+<rect x="298" y="800" width="360" height="120" rx="8" fill="#fdf1e3" stroke="#b07a2a" stroke-width="1.6"/>
+<text x="478" y="822" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">判据检查器（唯一实现）</text>
+<text x="478" y="840" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">① build  ② sorry + 公理白名单</text>
+<text x="478" y="858" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">③a 基底禁提  ③a′ A 层范围</text>
+<text x="478" y="876" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">③b 判重  ③c quote 逐字  ④ 模块卫生</text>
+<rect x="698" y="800" width="210" height="120" rx="8" fill="#eaf6ec" stroke="#3f7f4f" stroke-width="1.6"/>
+<text x="803" y="822" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">探针</text>
+<text x="803" y="840" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">ilean 位置索引</text>
+<text x="803" y="858" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">签名哈希 / 结构边</text>
+<rect x="948" y="800" width="230" height="120" rx="8" fill="#eef3fb" stroke="#4a6fa5" stroke-width="1.6"/>
+<text x="1063" y="822" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">verdict</text>
+<text x="1063" y="840" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">绿色/红色 + 原因</text>
+<text x="1063" y="858" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">来源记录（谁跑的）</text>
+<line x1="658" y1="860" x2="696" y2="860" stroke="#888888" stroke-width="1.8" stroke-dasharray="7,5" marker-end="url(#ah)"/>
+<text x="677" y="854" font-size="11" font-weight="normal" text-anchor="middle" fill="#666666" font-family="Segoe UI, Microsoft YaHei, sans-serif">读清单</text>
+<line x1="908" y1="860" x2="946" y2="860" stroke="#555555" stroke-width="1.8" marker-end="url(#ah)"/>
+<line x1="678" y1="730" x2="678" y2="792" stroke="#555555" stroke-width="1.8" marker-end="url(#ah)"/>
+<text x="678" y="755" font-size="11" font-weight="normal" text-anchor="middle" fill="#666666" font-family="Segoe UI, Microsoft YaHei, sans-serif">编译产物 / 探针输入</text>
+<rect x="298" y="990" width="300" height="118" rx="8" fill="#eef3fb" stroke="#4a6fa5" stroke-width="1.6"/>
+<text x="448" y="1012" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">声明图</text>
+<text x="448" y="1030" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">节点 = 声明（签名层）</text>
+<text x="448" y="1048" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">边 = A/B/I/R 四层</text>
+<text x="448" y="1066" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">基底为灰节点</text>
+<rect x="638" y="990" width="280" height="118" rx="8" fill="#eef3fb" stroke="#4a6fa5" stroke-width="1.6"/>
+<text x="778" y="1012" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">原子图</text>
+<text x="778" y="1030" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">一原子一节点</text>
+<text x="778" y="1048" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">输入：清单 + 声明图折叠</text>
+<rect x="958" y="990" width="240" height="118" rx="8" fill="#fdf1e3" stroke="#b07a2a" stroke-width="1.6"/>
+<text x="1078" y="1012" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">断言</text>
+<text x="1078" y="1030" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">覆盖 / 幻影 / 守恒</text>
+<text x="1078" y="1048" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">级次 / 折叠（机械）</text>
+<line x1="598" y1="1049" x2="636" y2="1049" stroke="#555555" stroke-width="1.8" marker-end="url(#ah)"/>
+<text x="617" y="1043" font-size="11" font-weight="normal" text-anchor="middle" fill="#666666" font-family="Segoe UI, Microsoft YaHei, sans-serif">折叠</text>
+<line x1="918" y1="1049" x2="956" y2="1049" stroke="#555555" stroke-width="1.8" marker-end="url(#ah)"/>
+<text x="937" y="1043" font-size="11" font-weight="normal" text-anchor="middle" fill="#666666" font-family="Segoe UI, Microsoft YaHei, sans-serif">每次导出</text>
+<rect x="638" y="1170" width="280" height="90" rx="8" fill="#eaf6ec" stroke="#3f7f4f" stroke-width="1.6"/>
+<text x="778" y="1192" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">Web 面板</text>
+<text x="778" y="1210" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">缩放 / 拖拽 / 搜索</text>
+<text x="778" y="1228" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">声明视图 ⇄ 原子视图</text>
+<rect x="958" y="1170" width="240" height="90" rx="8" fill="#eef3fb" stroke="#4a6fa5" stroke-width="1.6"/>
+<text x="1078" y="1192" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">导出 / 报告</text>
+<text x="1078" y="1210" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">graph.json / 统计</text>
+<text x="1078" y="1228" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">术语表 / 进度</text>
+<line x1="778" y1="1108" x2="778" y2="1162" stroke="#555555" stroke-width="1.8" marker-end="url(#ah)"/>
+<rect x="1228" y="1170" width="250" height="90" rx="8" fill="#fff0f0" stroke="#cc3333" stroke-width="1.6" stroke-dasharray="6,4"/>
+<text x="1353" y="1192" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">G4 插件一般化接口</text>
+<text x="1353" y="1210" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">pipeline-core / book 拆分</text>
+<text x="1353" y="1228" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">（文档未定）</text>
+<rect x="1278" y="350" width="220" height="96" rx="8" fill="#fff0f0" stroke="#cc3333" stroke-width="1.6" stroke-dasharray="6,4"/>
+<text x="1388" y="372" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">G3 多书共存布局</text>
+<text x="1388" y="390" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">目录/命名/跨书引用</text>
+<text x="1388" y="408" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">（文档未定）</text>
+<rect x="1478" y="990" width="200" height="118" rx="8" fill="#fff0f0" stroke="#cc3333" stroke-width="1.6" stroke-dasharray="6,4"/>
+<text x="1578" y="1012" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">G5 评估指标</text>
+<text x="1578" y="1030" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">覆盖率/verified 比例</text>
+<text x="1578" y="1048" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">人工干预/成本</text>
+<text x="1578" y="1066" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">（文档未定）</text>
+<text x="298" y="1310" font-size="12" font-weight="normal" text-anchor="start" fill="#666666" font-family="Segoe UI, Microsoft YaHei, sans-serif">图例：矩形=产物 · 圆角=过程 · 橙色=门禁 · 紫=外部输入 · 实线=数据流 · 虚线=派生/重算 · 红虚线框=文档缺口</text>
+</svg>

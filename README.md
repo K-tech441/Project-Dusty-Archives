@@ -1,10 +1,14 @@
-# PDF → Atoms
+# Project Dusty Archives（项目：故纸堆）
 
 **An agent-driven pipeline that turns a textbook PDF into a mechanically-checked Lean library
 and an interactive "atom graph".**
 从 PDF 教材到可检查 Lean 库与可视化「原子图」的 Agent 管线。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+![总架构](docs/assets/architecture.svg)
+
+> 图中红虚线框 G1–G5 是**尚未描述清楚**的接口/区域——本仓库的文档工作就是把这些框逐个消灭。
 
 ---
 
