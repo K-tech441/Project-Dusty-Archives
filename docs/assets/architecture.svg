@@ -47,10 +47,10 @@
 <text x="818" y="122" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">页码索引</text>
 <text x="818" y="140" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">book-index</text>
 <text x="818" y="158" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">机械生成, 只读</text>
-<rect x="958" y="100" width="250" height="74" rx="8" fill="#fff0f0" stroke="#cc3333" stroke-width="1.6" stroke-dasharray="6,4"/>
-<text x="1083" y="122" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">G1 书配置 schema</text>
-<text x="1083" y="140" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">字段/校验/多书共存放哪</text>
-<text x="1083" y="158" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">（文档未定）</text>
+<rect x="958" y="100" width="250" height="74" rx="8" fill="#eef3fb" stroke="#4a6fa5" stroke-width="1.6"/>
+<text x="1083" y="122" font-size="13" font-weight="bold" text-anchor="middle" fill="#222222" font-family="Segoe UI, Microsoft YaHei, sans-serif">书配置 schema v1</text>
+<text x="1083" y="140" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">纯数据：每节↔页码范围</text>
+<text x="1083" y="158" font-size="11" font-weight="normal" text-anchor="middle" fill="#444444" font-family="Segoe UI, Microsoft YaHei, sans-serif">规范：docs/book-config.md</text>
 <line x1="468" y1="137" x2="496" y2="137" stroke="#555555" stroke-width="1.8" marker-end="url(#ah)"/>
 <line x1="688" y1="137" x2="716" y2="137" stroke="#555555" stroke-width="1.8" marker-end="url(#ah)"/>
 <text x="702" y="131" font-size="11" font-weight="normal" text-anchor="middle" fill="#666666" font-family="Segoe UI, Microsoft YaHei, sans-serif">偏移</text>
