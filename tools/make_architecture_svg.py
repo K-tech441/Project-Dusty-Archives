@@ -126,7 +126,7 @@ def svg():
     o.append(box(X0, y, 190, 74, "PDF 教材", ["扫描件 / 文字层", "页码：印刷页↔PDF页"], C_SRC))
     o.append(box(X0 + 220, y, 190, 74, "书配置", ["PDF 路径 / 页码偏移", "章节边界 / 语言"], C_SRC))
     o.append(box(X0 + 440, y, 200, 74, "页码索引", ["book-index", "机械生成, 只读"], C_ART))
-    o.append(box(X0 + 680, y, 250, 74, "书配置 schema v1", ["纯数据：每节↔页码范围", "规范：docs/book-config.md"], C_ART))
+    o.append(box(X0 + 680, y, 250, 74, "书配置 schema v1", ["纯数据：每节↔页码范围", "章/节号可≠页序（如对换）"], C_ART))
     o.append(arrow(X0 + 190, y + 37, X0 + 218, y + 37))
     o.append(arrow(X0 + 410, y + 37, X0 + 438, y + 37, label="偏移"))
     o.append(arrow(X0 + 540, y + 74, X0 + 540, y + 110, label=""))
