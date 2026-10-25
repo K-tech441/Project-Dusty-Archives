@@ -192,8 +192,8 @@ def svg():
     o.append(arrow(X0 + 500, y - 62, X0 + 500, y - 8))
     o.append(box(X0 + 950, y, 250, 90, "G4 插件一般化接口", ["pipeline-core / book 拆分", "（文档未定）"], C_GAP, dashed=True))
 
-    # 缺口 G3 / G5
-    o.append(box(X0 + 1000, 350, 220, 96, "G3 多书共存布局", ["目录/命名/跨书引用", "（文档未定）"], C_GAP, dashed=True))
+    # 已关闭的缺口 G3（多书共存）→ 转为边界；G5 仍开放
+    o.append(box(X0 + 1000, 350, 220, 96, "边界：多书 = 独立实例", ["原子不跨书引用（ETT 不可计算）", "共享仅在基底 / 工具层"], C_ART))
     o.append(box(X0 + 1200, 990, 200, 118, "G5 评估指标", ["覆盖率/verified 比例", "人工干预/成本", "（文档未定）"], C_GAP, dashed=True))
 
     # 图例
