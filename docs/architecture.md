@@ -162,11 +162,12 @@ L3+L4 的产物。任何一层都可以单独替换（换 OCR 模型、换 Lean 
   失败即红）；结构上没有"关闭核心判据"的 API；
 - 迁移路径 A1–A4 + 负向测试（缺 profile 字段拒绝启动、扩展异常即红、无法关闭核心判据）。
 
-> **实现进度（2026-10-25）**：A1（core 从 profile 读）与 A2（本书 pack）已完成 ——
-> 插件 `@local/dsh-pipeline-core` + 实例 pack（`knowledge/book-profile.json` +
-> `docs/契约补充.md`）；core 源码里 grep 不到书名/书路径硬编码，同一份 core 用 profile
-> 跑出与旧 Munkres 专用插件**相同**的 `pipeline_gate` / `pipeline_doctor` 输出。
-> A3（MCP 工具面一般化）与 A4（第二本书试点）待做。
+> **实现进度（2026-10-25）**：A1（core 从 profile 读）+ A2（本书 pack）+ A3（引擎与 MCP 面
+> 全部 profile 驱动）已完成 —— 插件 `@local/dsh-pipeline-core` + 实例 pack
+> （`knowledge/book-profile.json` + `docs/契约补充.md`）；core 源码里 grep 不到书名/书路径，
+> 判据引擎按 `KL_PROFILE` 解析书数据（60 处书硬编码已替换），MCP 面只留 profile 一行。
+> 同一份 core/引擎用 profile 跑出与旧 Munkres 专用实现**相同**的 gate/doctor 输出。
+> 只剩 A4（第二本书试点）—— 那是"换书只写 pack"的最终验收。
 
 **已关闭：G3 多书共存布局（论证为不可行，不是"待补"）。**
 跨书引用要求判定"两本书里的两条陈述是不是同一个原子"——这等价于判定两段数学内容的
@@ -422,9 +423,9 @@ verdict = 一次完整判据检查的**快照**，写在对应节的清单里（
 ```
 pipeline-core      ✅ 判据/门禁/契约骨架（与书无关；profile 驱动）
 pipeline-book-<id> ✅ 书配置/原子口径/基底参数/领域判据扩展/渲染配置/文案
-mcp-pipeline         一般化的清单/判据/图/页码 API（待做 A3）
-graph-panel          配置化渲染（读 graph.json + render 配置）（待做 A3）
-mcp-lean / mcp-mathlib   与书无关，可直接复用（待做 A3 的路径配置化）
+mcp-pipeline       ✅ 一般化的清单/判据/图/页码 API（引擎按 KL_PROFILE 读 profile；工具名保留 kl_*）
+graph-panel        ✅ 配置化渲染（读 profile.paths.graph + render 配置）
+mcp-lean / mcp-mathlib   ✅ 复用；lean 项目路径显式一行 = profile.paths.repo，mathlib 索引为工具级
 ```
 
 core 与 book pack 之间只有一份契约：`book-profile.json`（路径/口径/判据参数/扩展清单）。
@@ -487,8 +488,8 @@ core 与 book pack 之间只有一份契约：`book-profile.json`（路径/口�
 ## 9. 路线图
 
 - **P0（已完成）**：一个完整实例（点集拓扑基础，§12–§19）。
-- **P1（一半完成）**：插件一般化 —— A1/A2 已落地（core + 本书 pack 已切换，见 §2.2）；
-  A3（MCP 工具面一般化：`kl_*` → 通用 `pipeline_*`、路径从 profile 取）与 A4（第二本书试点）待做。
+- **P1（差最后一步）**：插件一般化 —— A1/A2/A3 已落地（core + 本书 pack + 引擎/MCP 面
+  profile 驱动，见 §2.2）；只剩 **A4**：第二本书最小试点，用来验收「换书只写 pack、代码零改动」。
 - **P2**：评估矩阵（覆盖率、verified 比例、人工干预次数、成本）+ 自动回归。
 - **P3**：教学/研究向的图交互与导出。
 

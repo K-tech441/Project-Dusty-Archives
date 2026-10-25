@@ -110,24 +110,35 @@ VLM 幻觉被当成原文（关键位置没核对、或核对了但没留痕）�
 
 ## 8. 接上 core 插件（本书 profile）
 
-core 插件只认一份 `book-profile.json`（字段见 [plugin-api.md](plugin-api.md) §3；字段名不猜，
+core 插件与判据引擎共认一份 `book-profile.json`（字段见 [plugin-api.md](plugin-api.md) §3；字段名不猜，
 缺了直接拒绝启动 / 体检报红）。落地顺序：
 
 1. 在实例仓库里写 `knowledge/book-profile.json`：
    `book_id` / `title` / `book_config`；`paths`（`repo` 相对 profile 文件，其余相对仓库根；
-   清单目录、基底、图、术语表、入序表、转录目录）；`docs`（权威文档指针）；`lean.lib` +
-   `toolchain_file`；`cli.module`（判据引擎模块名）；`atoms.required_fields`；
+   清单目录、基底、图、术语表、入序表、转录目录）；`docs`（权威文档指针）；
+   `lean.lib` + `lean.namespace` + `toolchain_file`（库名 / Lean 命名空间 / 工具链文件）；
+   `cli.module`（判据引擎模块名）；`atoms.required_fields`；
    `judge`（基底候选 / 禁提清单 / 扩展）；`env`（库外资源路径、书 id）；
    `contract_extras`（项目补充契约）；`render`。
 2. 写 `contract_extras` 指向的补充契约（本书特有：仓库/路径、章节特例如 13/14 章对换、
    命令差异、基底变更规程、工作基准）——**不要重复 core 通用规则**。
 3. 在 DSH profile 里装 `@local/dsh-pipeline-core`，`config.profile` 指向这份 profile；
-   重启 DSH（契约在插件加载时固化）。
-4. 验收：`pipeline_doctor` 两段全绿（书 profile 路径全 ✓ + 判据引擎全 ✓），首行打印
-   `core 契约 vN`；`pipeline_gate(某个已完成节)` 输出与旧实例一致。
+   再改三个 MCP 面的**唯一一行**配置（其余路径引擎会从 profile 解析）：
+   - `dsh-mcp-kl`：`PYTHONPATH=<repo>/tools;<pymupdf>` + `KL_PROFILE=<profile>`；
+   - `dsh-graph-panel`：`profile=<profile>`；
+   - `dsh-mcp-lean`：`--lean-project-path = profile.paths.repo`（外部 exe 只吃命令行参数）。
+   重启 DSH（契约与 MCP server 环境在进程启动时固化）。
+4. 验收：`python -m kl.cli config` 打印的路径与 profile 一致（排障第一站）；
+   `pipeline_doctor` 两段全绿（书 profile 路径全 ✓ + 判据引擎全 ✓），首行打印 `core 契约 vN`；
+   `pipeline_gate(某个已完成节)` 输出与旧实例一致。
 5. 负向自检：临时把 profile 里某个路径改错 ⟹ doctor 必须红且指出字段名；
    删一个必填字段 ⟹ 插件必须拒绝启动。改回来再重启。
 
 ```text
-只写 pack（profile + 补充契约 + 可选判据扩展），core 一行不改 —— 这是「换一本书」的验收标准。
+只写 pack（profile + 补充契约 + 可选判据扩展），core / 引擎 / MCP 面代码一行不改
+—— 这是「换一本书」的验收标准（A4 第二本书试点就是照这条走）。
 ```
+
+**明确留在 profile 外面的配置**（机器级，不随书变）：python 解释器路径、`PYTHONPATH`、
+Lean LSP 的 `--lean-project-path`、mathlib 索引 DB。这些是"装在哪台机器"的信息，
+不是"哪本书"的信息。

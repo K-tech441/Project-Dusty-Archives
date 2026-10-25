@@ -12,8 +12,9 @@ and an interactive "atom graph".**
 > G1「书配置 schema」已成文（[book-config.md](docs/book-config.md)：纯数据、人填或提取页码、支持章号≠页序）；
 > G2「OCR 可复现性」是本质黑箱（VLM 幻觉只能压低不能消除，改为"视觉核对 + 留痕"规则）；
 > G3「多书共存」论证不可行（跨书原子同一性判定不可计算——外延类型论 ETT）；
-> G4「插件一般化接口」已成文并已落地 A1/A2（[plugin-api.md](docs/plugin-api.md)：core + book pack；
-> 实例已切到 `pipeline-core` + 本书 profile，core 源码里无书名/书路径硬编码）；
+> G4「插件一般化接口」已成文并已落地 A1–A3（[plugin-api.md](docs/plugin-api.md)：core + book pack；
+> 实例已切到 `pipeline-core` + 本书 profile；判据引擎按 `KL_PROFILE` 读 profile，MCP 面只留
+> profile 一行 —— core/引擎源码里无书名/书路径硬编码）；A4（第二本书试点）待做；
 > G5「评估」不设指标——验收是主观的：**它是否确实还原出了原书的信息**，统计只作辅助证据。
 
 ---
@@ -65,7 +66,7 @@ LLM 不直接当裁判——它写转录、写清单、写证明、写图；每�
 | Lean 模块 | 9（Base + 8 节）；§19 单节 70 条声明 |
 | 图 | 声明图 + 原子图（367 条原子边），15 条机械断言 |
 | 每一节的验收 | 判据（build / sorry&axioms / 基底提及 / 判重 / quote 逐字 / module 卫生）+ 双向覆盖 |
-| 插件形态 | 通用 `pipeline-core` + 本书 profile 已切换（A1/A2）；`pipeline_gate` / `pipeline_doctor` 由 core 提供，书信息全部来自 `knowledge/book-profile.json` |
+| 插件形态 | 通用 `pipeline-core` + 本书 profile（A1–A3 已落地）；判据引擎按 `KL_PROFILE` 解析书数据，MCP 面（工具/图面板）配置里只留 profile 一行 |
 
 > 注：本仓库只包含**方案文档**与工具接口说明。教材 PDF、OCR 转录与 Lean 源码属于
 > 具体实例工程的物料，不随本仓库分发（版权与体量原因）。

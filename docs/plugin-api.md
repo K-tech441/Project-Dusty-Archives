@@ -29,10 +29,12 @@ book    = 因书而变的东西：书配置、原子口径、基底参数、领�
 |---|---|---|---|
 | `pipeline-core` | 注入流程契约；`pipeline_gate` / `pipeline_doctor`；加载并校验 book profile；CLI 桥 | `@local/dsh-pipeline-core`（由 `dsh-munkres-pipeline` 一般化而来） | ✅ A1/A2 |
 | `pipeline-book-<id>` | 书配置 + 原子口径 + 基参数 + 领域判据扩展 + 渲染配置 + 项目文案 | 实例仓库：`knowledge/book-profile.json` + `docs/契约补充.md` | ✅ A2 |
-| `mcp-pipeline` | 通用 MCP：清单/判据/图/页码查询（原 `kl` 工具面） | `dsh-mcp-kl` / `tools/kl` | 待做 A3 |
-| `mcp-lean` | Lean LSP 工具面（项目路径可配） | `dsh-mcp-lean` | 路径仍硬编码（A3） |
-| `mcp-mathlib` | 本地 mathlib 检索索引 | `dsh-mcp-mathlib` | 索引路径仍硬编码（A3） |
-| `graph-panel` | 图渲染（读 `graph.json` + 渲染配置） | `dsh-graph-panel` | 仓库路径仍硬编码（A3） |
+| `mcp-pipeline` | 通用 MCP：清单/判据/图/页码查询（原 `kl` 工具面；引擎按 `KL_PROFILE` 读 profile） | `dsh-mcp-kl` / `tools/kl` | ✅ A3（工具名仍为 `kl_*`，见下） |
+| `mcp-lean` | Lean LSP 工具面（项目路径可配） | `dsh-mcp-lean` | ✅ 显式一行 `--lean-project-path = profile.paths.repo` |
+| `mcp-mathlib` | 本地 mathlib 检索索引（工具级，与书无关） | `dsh-mcp-mathlib` | ✅ 与书解耦；换机器改路径 |
+| `graph-panel` | 图渲染（读 `graph.json` + 渲染配置） | `dsh-graph-panel` | ✅ A3（`config.profile` → 图路径） |
+| （可选）`compact-control` | 上下文压缩控制（与书无关） | `dsh-compact-control` | 可复用 |
+| （独立族）`class-*` | 教学/授课插件（不属于本管线主链） | `dsh-munkres-class` | 与书绑定（不入主链） |
 | （可选）`compact-control` | 上下文压缩控制（与书无关） | `dsh-compact-control` | 可复用 |
 | （独立族）`class-*` | 教学/授课插件（不属于本管线主链） | `dsh-munkres-class` | 与书绑定（不入主链） |
 
@@ -45,9 +47,13 @@ contract-extras.md     # 项目补充规则（可选，见 §6）
 render.json            # 图渲染配置（可选）
 ```
 
-> **实现现状**：Munkres 实例的 pack 直接住在实例仓库里（一个仓库 = 一个实例）：
+> **实现现状（A1–A3 已落地）**：Munkres 实例的 pack 直接住在实例仓库里（一个仓库 = 一个实例）：
 > `knowledge/book-profile.json`（profile）+ `docs/契约补充.md`（补充契约）。
-> pack 不需要是独立 npm 包 —— core 只按路径读它。
+> pack 不需要是独立 npm 包 —— core / 引擎 / 各 MCP 面都只按路径读它。
+>
+> **工具名保留 `kl_*`（有意不做 `pipeline_*` 改名）**：改名要同步注入契约、仓库全部文档与
+> 使用习惯，收益只是字面好看。文档口径：**`kl` = 知识层工具（knowledge layer）**，
+> 换书不影响工具名；将来若真做多实现并存，再在 core 层加别名。
 
 ---
 
@@ -78,6 +84,8 @@ core 只认这一份文件；其余路径、名字、口径都由它给出。
   },
   "lean": {
     "lib": "MunkresLean",                               // 内容库名；聚合文件 = <lib>.lean
+    "namespace": "Munkres",                             // Lean 命名空间前缀（判重 marker 等）
+    "strip_prefixes": ["Munkres.Topology.", "Munkres."],// 图/面板显示时剥掉的前缀（可选）
     "toolchain_file": "lean-toolchain",
     "build_system": "lake"
   },
@@ -122,6 +130,34 @@ paths.repo          相对 profile 文件所在目录（或绝对路径）
 
 - `atoms.required_fields` 至少包含固定最小集 `id / kind / quote / loc / lean`（只能加不能减）；
 - 未知键**允许**（前向兼容），但 core 必须忽略而不是猜测。
+
+### 3.1 配置只有一个来源（引擎侧，A3 实测口径）
+
+引擎（判据实现，如 `tools/kl`）不经过 DSH 插件也可能被直接调用（CLI / 批处理 / MCP），
+所以它自己也要读 profile。做法是**一个环境变量 + 一个解析模块**：
+
+```
+KL_PROFILE = <book-profile.json>
+   ↓ tools/kl/config.py（唯一解析点）
+book_id / lib / namespace / repo / 清单目录 / 基底 / 图 / 术语表 / 页码索引 / 库外资源
+   ↓ 并 setdefault 回填
+KL_BOOK_ID / KL_BOOK_PDF / KL_BOOK_MD / KL_BOOK_INDEX / KL_LEAN_ROOT / KL_LEAN_LIB / ...
+```
+
+优先级：**环境变量 > profile > 仓库布局约定/探测**。没有 `KL_PROFILE` 时按布局约定运行
+（库名从 `lakefile.toml` 的 `lean_lib` 探测、书 id 从 `knowledge/books/` 唯一一本探测、
+仓库根由引擎文件位置推出）——即旧行为不受影响，一般化是可选的。
+
+**排障命令**：`python -m kl.cli config` 打印解析后的全部路径（profile / 书 id / 库名 /
+清单目录 / 图 / 术语表 / 页码索引）。要断言"换书只换 pack"，先看这一条输出。
+
+**剩下的显式配置（有意不塞进 profile）**：
+
+| 配置 | 为什么留在外面 |
+|---|---|
+| python 解释器 / `PYTHONPATH` | 机器级路径（引擎装在哪），与书无关 |
+| `--lean-project-path`（Lean LSP） | 外部 exe 只吃命令行参数；加 wrapper 维护成本 > 收益（= `paths.repo`，一行） |
+| mathlib 索引 DB | 工具级服务，所有书共用 |
 
 ---
 
@@ -221,7 +257,7 @@ core 消费的生成物（`sectionNN.json` / 探针 / `graph.json` / verdict）*
 |---|---|---|---|
 | A1 | 把 `dsh-munkres-pipeline` 的 Munkres 文案/路径改成从 profile 读 | 现有实例用 profile 能跑出**相同**的 gate/doctor 输出 | ✅ 2026-10-25 |
 | A2 | 建 `book pack: munkres-2e`（profile / 契约补充 / 基底参数 / 渲染配置） | core 里 grep 不到 "Munkres"/中文书名/`knowledge/pipeline` 等硬编码 | ✅ 2026-10-25 |
-| A3 | 通用化 `mcp-pipeline`（`kl` → pipeline，路径从 profile 取） | 全部 kl 工具在 munkres pack 下通过 | 待做 |
+| A3 | 通用化 `mcp-pipeline`（`kl` → pipeline，路径从 profile 取） | 全部 kl 工具在 munkres pack 下通过 | ✅ 2026-10-25（工具名保留 `kl_*`，见 §2） |
 | A4 | 第二本书试点（最小：一节即可） | 只写 book pack + 填数据，core 零改动跑通 | 待做 |
 
 **负向测试**（必须通过才算一般化成功）——A1/A2 的离线测试台已覆盖：
@@ -247,6 +283,18 @@ OK: pipeline-core 离线测试通过
 
 `pipeline_gate(§19)` / `pipeline_doctor` 的输出与旧 Munkres 专用插件一致（工具名、步骤、
 `steps/problems/next/report` 结构都不变，只是 report 头行多了书 id 与 core 契约版本）。
+
+**A3 的验收证据**（引擎与 MCP 面均已 profile 驱动；`tools/kl` 里 60 处书硬编码已替换）：
+
+```
+kl config                    两种模式（无 / 有 KL_PROFILE）解析出相同路径
+kl doctor                    无 profile 14 项全绿；有 profile 14 项全绿
+kl check 19 --with-dup       ok，dup 397
+kl audit 19 / link --check / quote-check 19    13/13 · 70 条 · 13/13
+kl graph                     15 条断言全过；viz 渲染 131 原子 / 367 边正常
+dsh-mcp-kl 配置              python / PYTHONPATH / KL_PROFILE / KL_PYLIBS（书数据不再写死）
+dsh-graph-panel 配置         只留 profile（离线：profile 模式 200、回退模式 200、缺配置 404 带错）
+```
 
 ---
 
