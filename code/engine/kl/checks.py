@@ -771,6 +771,9 @@ def base_scope(lean_root: str | None = None, lib: str = config.LIB) -> dict[str,
     A 层（签名里的提及）落在允许集外 ⟹ 报「超出基底范围」。
 
     B 层豁免：证明项是仪器（tactic 展开物、基底内部引理都在这里）。
+
+    ★ 三个「基底」物件的分工（可及边界 / 许可集 / 登记表）见 `docs/工程基准.md` §1.1：
+      本条读的是**许可集**（声明级、反向传播生成），不是 `Base.lean` 的 import 闭包（模块级、物理可及）。
     """
     from kl import graph as G  # 延迟导入（graph 反过来 import checks）
 
