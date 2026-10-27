@@ -171,10 +171,10 @@ KL_BOOK_ID / KL_BOOK_PDF / KL_BOOK_MD / KL_BOOK_INDEX / KL_LEAN_ROOT / KL_LEAN_L
 |---|---|
 | ① build | 定义"能编译"，是全部形式化的前提 |
 | ② sorry / 公理白名单 | 定义"证完了"，不能由书决定 |
-| ③a 基底概念禁提 | 定义"自造内容不被 mathlib 实现顶替" |
+| ③a 内容概念禁提 | 定义"自造内容不被 mathlib 实现顶替"（禁止清单 = 本书要自造的概念；基底允许借） |
 | ③a′ 陈述层基底范围 | 定义"借用了什么"，见 Q6 |
-| ③b 判重 | 定义"不重证"，范围 = 基底 + 自库 |
-| ③c quote 逐字 | 定义"清单 ↔ 转录一致" |
+| ③b 判重 | 定义"不重证"；判定环境 = Base.lean 的 import 闭包 + 本节（不判 mathlib 内容层） |
+| ③c 引文可溯源 | 定义"清单 ↔ 转录一致"（规范化后连续子串） |
 | ④ module 卫生 | 定义"库边界" |
 
 **结构上的保证**：core 的判据不是插件注册进来的，book pack 无法移除/覆盖；
@@ -233,7 +233,7 @@ ctx = {
 - 补充文本的用途：本书特有的术语约定、章节组织、已知例外（如"本书 13/14 章装订对换，
   按物理页序"）、项目基准（book / mathlib）、权威文档指针，而不是重复通用规则。
 
-> **实现现状（A1/A2）**：注入文本 = `core 契约 v6` 头行 + 通用正文 + `【项目补充】` 全文。
+> **实现现状（A1/A2）**：注入文本 = `core 契约 v7` 头行 + 通用正文 + `【项目补充】` 全文。
 > core 契约版本号在 `pipeline_doctor` 首行打印；**改完契约必须重启 DSH**（契约在插件加载时
 > 固化，与工具表同理）。
 > 旧的独立「工作判据注入」插件已并入本机制：其中**通用**的测量/查证纪律进 core 正文，
@@ -291,7 +291,7 @@ kl config                    两种模式（无 / 有 KL_PROFILE）解析出相�
 kl doctor                    无 profile 14 项全绿；有 profile 14 项全绿
 kl check 19 --with-dup       ok，dup 397
 kl audit 19 / link --check / quote-check 19    13/13 · 70 条 · 13/13
-kl graph                     15 条断言全过；viz 渲染 131 原子 / 367 边正常
+kl graph                     15 条断言全过；viz 渲染 146 原子 / 442 边正常
 dsh-mcp-kl 配置              python / PYTHONPATH / KL_PROFILE / KL_PYLIBS（书数据不再写死）
 dsh-graph-panel 配置         只留 profile（离线：profile 模式 200、回退模式 200、缺配置 404 带错）
 ```

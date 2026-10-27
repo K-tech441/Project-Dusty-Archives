@@ -16,7 +16,8 @@
 
 ## 判据只在 kl_check 一处实现
 
-不要用 grep / 临时脚本代替它 —— 四判据全在里面，且返回的是结构化 verdict。
+不要用 grep / 临时脚本代替它 —— 判据集（8 个子判定）全在里面，且返回结构化 verdict。
+每条判据的意图 / 数据源 / 「不抓什么」见 `docs/工程基准.md` §4（唯一事实源）。
 
 运行：`<python> -m kl.mcp`（由 dsh-mcp-client 拉起）
 """
@@ -80,9 +81,11 @@ mcp = MCPServer(
     version="4.0.0",
     instructions=(
         "形式化管线（知识层）v4。每节单一事实源是清单目录下的 sectionNN.json（位置见 kl config）。"
-        "顺序：kl_book 定位 → kl_init 建清单 → 读英文 md 填条目 → 写 Lean → kl_check 跑四判据 → kl_audit 收口。"
-        "四判据只有 kl_check 一处实现（build / sorry+axioms / ③a 提及禁止清单 / ③b 判重[基底+自库]）；"
-        "不要自己写 grep 或临时脚本代替。图一律先 kl_figure 机械解码，不要靠眼睛读扫描件。"
+        "顺序：kl_book 定位 → kl_init 建清单 → 读英文 md 填条目 → 写 Lean → kl_check 跑判据集 → kl_audit 收口。"
+        "判据集只有 kl_check 一处实现（8 个子判定：① build · ② sorry/axioms · ③a 提及禁止清单 · "
+        "③a′ 陈述层基底范围 · ③b 判重 · ③c 引文可溯源 · ④ module 卫生）；"
+        "意图 / 数据源 / 「不抓什么」见 docs/工程基准.md §4。不要自己写 grep 或临时脚本代替。"
+        "图一律先 kl_figure 机械解码，不要靠眼睛读扫描件。"
     ),
 )
 
@@ -247,7 +250,7 @@ def kl_init(
         "ok": True, "inventory": path,
         "book": book.to_dict(), "book_summary": book.summary(),
         "order_items": pending,
-        "next": "读英文 md（book.md 那几页）→ 逐条填 item（quote 逐字）；写完 kl_check 四判据",
+        "next": "读英文 md（book.md 那几页）→ 逐条填 item（quote 逐字）；写完 kl_check 跑判据集",
     })
 
 
@@ -266,7 +269,7 @@ def kl_book_locate(
     return _dump(checks.locate_anchor(anchor, limit=limit))
 
 
-# ---------------------------------------------------------------- 四判据
+# ---------------------------------------------------------------- 判据集
 
 @mcp.tool()
 def kl_check(
@@ -274,14 +277,14 @@ def kl_check(
     update: Annotated[bool, Field(
         description="是否回填 verdict 与 status（默认 false，只报不改）")] = False,
     with_dup: Annotated[bool, Field(
-        description="是否跑 ③b 判重（基底+自库；实测 ≈11 s）。★ 必须与 update=true 同一次调用，"
-                    "否则判重结果不落盘（跑过等于没跑）")] = False,
+        description="是否跑 ③b 判重（环境 = Base 的 import 闭包 + 本节；实测 ≈11 s）。"
+                    "★ 必须与 update=true 同一次调用，否则判重结果不落盘（跑过等于没跑）")] = False,
 ) -> str:
-    """Run the four mechanical criteria and return one structured verdict.
+    """跑判据集并返回一个结构化 verdict。
 
-    ① lake build · ② no sorry + axioms ⊆ {propext, Classical.choice, Quot.sound}
-    ③a 我们的模块不得提及 基底.json.forbidden_so_far 里的 mathlib 名字
-    ③b 判重（收口必跑）：import 只含 Base + 本库 ⟹ 范围 = 基底 + 自库（不对 mathlib 内容层）
+    8 个子判定（编号是历史遗留，按名字读）：① build · ② sorry · ② axioms ·
+    ③a 提及禁止清单 · ③a′ 陈述层基底范围 · ③b 判重 · ③c 引文可溯源 · ④ module 卫生。
+    每条判据的意图 / 数据源 / 「不抓什么」见 docs/工程基准.md §4（唯一事实源）。
     """
     sec = _load(section)
     root = _lean_root(sec)

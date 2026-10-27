@@ -1,32 +1,24 @@
 # -*- coding: utf-8 -*-
 """kl 判据与检查（唯一实现）。
 
-## 四判据（全部机械）
+## 判据清单 / 意图 / 数据源 / 「不抓什么」：见 `docs/工程基准.md` §4（唯一事实源）
+
+本文件只实现，不定义语义。8 个子判定（编号是历史遗留，按名字读）：
 
 ```
-① build          lake build 通过
-② sorry/axioms   无 sorryAx；#print axioms ⊆ {propext, Classical.choice, Quot.sound}
-③a 提及          我们的模块【提及】了禁止清单里的 mathlib 名字 ⟹ 失败
-                 （= 「不能拔出萝卜带出泥」的可执行形式；读 .ilean 的 references）
-③a′ 基底范围      我们【陈述层】提及的 mathlib 名字 ⊆ base_candidate ∪ scope_extras
-                 （base_candidate = 内容层反向传播并扣除内容自身；B 层不查 ③a′，
-                  但 ③a 仍管整个模块——证明里也不许出现禁止清单里的 mathlib 实现）
-③b 判重          范围 = 基底 + 自库内部（★ 不对 mathlib 内容层判重 —— hub 出局）
+① build · ② sorry · ② axioms · ③a 提及禁止清单 · ③a′ 陈述层基底范围
+③b 判重 · ③c 引文可溯源 · ④ module 卫生
 ```
 
-## 为什么 ③a 要读 .ilean 而不是 grep 源码
+## 实现侧不变量（改代码时必须守住）
 
-禁止清单里的名字（`IsOpen` / `closure` …）**我们自己也用**（自造的）。
-源码字符串匹配分不清「我们的 IsOpen」和 mathlib 的 `IsOpen`；
-`.ilean` 的 references 是 **Lean 解析后的常量全名 + 定义所在模块** ⟹ 可以机械区分：
-短名 ∈ 禁止清单 且 定义模块不在本库命名空间下 ⟹ 命中。
-
-## 为什么 ③b 只查「基底 + 自库」
-
-内容层我们【必须】自己重写（判据①要求 build，判据②要求 axioms 干净），
-与 mathlib 的同一概念撞名是【设计】不是错误。判重要防的是两件事：
-(a) 我们自己写了两遍；(b) 我们重复造了基底里已有的东西（如 ℝ 的引理）。
-探针只 import 基底 `<lib>.Base` + 我们的模块 ⟹ 判定范围自然就是这两者。
+- ③a 读 `.ilean` 的 references（解析后的常量全名 + 定义模块），不做源码字符串匹配：
+  禁止清单里的名字（`IsOpen` / `closure` …）我们自己也用（自造的），字符串匹配分不清
+  「我们的」和「外部的」。判定 = 短名 ∈ 禁止清单 且 定义模块不在本库 ⟹ 命中。
+- ③b 的判重探针只 import `<lib>.Base` + 本节模块 ⟹ 判定环境 = Base 的 import 闭包 + 本节；
+  这就是「不对 mathlib 内容层判重」的实现方式（是机制，不是约定）。
+- ③c 两侧（md 与 quote）走同一个 `_norm_prose`；事实源是转录 md，不是 PDF 排版源。
+- 判不了必须进 problems，或在返回值里显式 `skipped` 留痕；不要把「没跑」当「通过」。
 """
 
 from __future__ import annotations

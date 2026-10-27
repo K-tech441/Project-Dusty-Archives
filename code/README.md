@@ -4,7 +4,7 @@
 配置样本。方案本身（为什么这么设计）在 [`../docs/`](../docs/)。
 
 > 它是**参考实现**，不是开箱即用的产品：路径、解释器、Lean 工程都是按一个真实实例
-> （Munkres《Topology》2e，§12–§19）校准的。换书 = 写一份 book pack + 改几行机器级配置
+> （Munkres《Topology》2e，§12–§20）校准的。换书 = 写一份 book pack + 改几行机器级配置
 > （见 [docs/new-book.md](../docs/new-book.md) §8 与 [docs/plugin-api.md](../docs/plugin-api.md) §3）。
 
 ## 目录
@@ -41,6 +41,20 @@ examples/munkres-2e/    实例 pack 样本：book-profile.json + 契约补充 + 
    可直接抄 `examples/munkres-2e/cordis.patch.yml`；
 4. 重启 DSH；`pipeline_doctor` 两段全绿 = 安装成功。
 
+## 维护：源工程 → 本仓的同步（机械检查）
+
+`code/` 是源工程（库工程 + DSH 插件源）的**逐字节拷贝**。人手同步会漏（2026-10-27 实测：
+`契约补充.md` 漏了 `kl view` 与图重算说明）⟹ 用脚本查：
+
+```bash
+python tools/sync_from_source.py           # 只检查；有漂移 exit 1
+python tools/sync_from_source.py --write   # 把源文件覆盖到本仓（之后 git diff 复核）
+```
+
+路径由环境变量给（换机器不改代码）：`KL_SOURCE_REPO`（库工程根，默认 `D:\munkres-formal`）、
+`KL_BUNDLES`（插件源目录，默认同级 `dsh-bundles`）。规则见 `--list`：
+`exact`（整棵树/整文件逐字节；源里多出的文件也算漂移）与 `subset`（只保证本仓已有文件一致）。
+
 ## 验收（三条命令）
 
 ```bash
@@ -52,7 +66,7 @@ python -m kl.cli view      # 生成自包含的交互式原子图 HTML（交付�
 
 ## 版本口径
 
-- core 契约 **v6**（`pipeline_doctor` 首行打印；契约在插件加载时固化，改完必须重启 DSH）
+- core 契约 **v7**（`pipeline_doctor` 首行打印；契约在插件加载时固化，改完必须重启 DSH）
 - `kl` 引擎 **v4.0.0**；pack schema `book-profile/v1`；书配置 `book-config/v1`
 - 判据语义固定不可配（[docs/plugin-api.md](../docs/plugin-api.md) §4.1）；book pack 只能
   配参数、加只读扩展，**不能关判据**

@@ -6,7 +6,7 @@
  *   1. systemPrompt 段：通用流程契约（判据清单 / 五步 / LSP 内循环 / 协作 / 收口）
  *      + 本书 pack 的【项目补充】。每一步模型调用都注入，避免随上下文压缩被稀释。
  *   2. 工具 pipeline_gate(section)：一次调用跑完收口三连
- *      （指针校验 → 四判据含判重 → 双向覆盖审计），返回结构化 verdict + 下一步。
+ *      （指针校验 → 判据集含判重 → 双向覆盖审计），返回结构化 verdict + 下一步。
  *   3. 工具 pipeline_doctor()：本书 profile 校验 + 判据引擎体检。
  *
  * ★ 书相关的一切都从 book profile 读（knowledge/book-profile.json）：书 id/标题、
@@ -24,7 +24,7 @@ const { execFile } = require('node:child_process');
 
 // 注入契约的版本号：pipeline_doctor 会把它打出来 —— 改完契约必须重启 DSH，
 // 重启后看到「core 契约 vN」与文件头一致才算真的加载了新契约（契约在插件加载时固化）。
-const CORE_CONTRACT_VERSION = 'v6';
+const CORE_CONTRACT_VERSION = 'v7';
 
 const PROFILE_SCHEMA_RE = /^book-profile\/v(\d+)$/;
 const PROFILE_MAJOR = 1;
@@ -45,8 +45,13 @@ const DEFAULTS = {
 /** 通用契约（与书无关）。本书特有的东西一律进 pack 的 contract_extras。 */
 const CORE_BODY = [
   '■ 判据（只有判据引擎一处实现；插件/文档/grep 都不是判据）',
-  '① build ② 无 sorry、axioms ⊆ {propext, Classical.choice, Quot.sound} ③a 禁提基底概念',
-  '③a′ A 层引用在基底范围内 ③b 判重（基底 + 自库）③c quote 逐字 ④ module 卫生。',
+  '① build ② sorry（无未证占位）· ② axioms ⊆ {propext, Classical.choice, Quot.sound}',
+  '③a 提及禁止清单（本书要自造的内容概念，一条都不许从 mathlib 借；整模块查）',
+  '③a′ 陈述层基底范围（A 层引用 ⊆ base_candidate ∪ scope_extras）',
+  '③b 判重（环境 = Base.lean 的 import 闭包 + 本节，不是 base_candidate）',
+  '③c 引文可溯源（规范化后连续子串——「逐字」是俗称）④ module 卫生。',
+  '★ 每条判据的意图 / 数据源 / 「不抓什么」见 docs/工程基准.md §4（唯一事实源）；',
+  '  编号是历史遗留，按名字读，不要从编号顺序猜语义。',
   '缺判据就扩展判据引擎的 check；不要用临时脚本或人眼代替，也不要只写在文档里。',
   '',
   '■ 每节五步',
@@ -54,7 +59,7 @@ const CORE_BODY = [
   '① 取本节页码（只读页码索引，禁止翻书/凭记忆）② 建本节清单（单一事实源 sectionNN.json）',
   '③ 读英文转录逐条填 item：quote 直接抄 md 原文；填一条就 quote-check，坏一条立刻改',
   '④ 写 Lean：新模块用模板生成头；无 sorry；只 import 基底与本库',
-  '⑤ 刷新指针 → 四判据（含判重，回填 verdict）→ 收口审计 → 入序表标 done',
+  '⑤ 刷新指针 → 判据集（含判重，回填 verdict）→ 收口审计 → 入序表标 done',
   '（§具体命令、路径、基线规程见【项目补充】指向的权威文档；本段只定纪律）',
   '',
   '■ 写证明：内循环是交互式 LSP（诊断只是其中一环，不是全部）',
@@ -381,7 +386,7 @@ async function gate(config, profile, section) {
     },
     {
       key: 'check',
-      label: '四判据 + ③b 判重（check --with-dup --update）',
+      label: '判据集 + ③b 判重（check --with-dup --update）',
       args: ['check', String(section), '--with-dup', '--update'],
       next: '按 check.problems 修 Lean 或清单；③b 失败看 dup.ours 的重复组原文（删自己那条、改用基底引理）',
     },
@@ -557,7 +562,8 @@ function apply(ctx, rawConfig) {
   ctx.effect(() => ctx.tools.register({
     name: 'pipeline_gate',
     description: [
-      '形式化管线收口门禁：一次调用依次跑 指针校验 → 四判据（含 ③b 判重，回填 verdict）→ 收口审计，',
+      '形式化管线收口门禁：一次调用依次跑 指针校验 → 判据集（含 ③b 判重，回填 verdict）→ 收口审计，',
+      '判据的意图/数据源/「不抓什么」见仓库 docs/工程基准.md §4（唯一事实源）。',
       '返回结构化 verdict + 下一步。判据不在本插件实现，调用的就是仓库判据引擎（python -m <cli.module>）的同一实现。',
       '在把某节标为完成之前必须调用它；ok=false 时按 next 修，不许跳过。',
     ].join(''),

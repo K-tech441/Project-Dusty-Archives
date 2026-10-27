@@ -1,7 +1,7 @@
 # engine — 判据引擎（`kl`）
 
-**判据的唯一实现**：所有「真」只在这里判定——build / 无 sorry 与公理白名单 / 基底禁提 /
-陈述层基底范围 / 判重 / quote 逐字 / module 卫生。插件与 MCP 只是壳，grep 与临时脚本不是判据。
+**判据的唯一实现**：所有「真」只在这里判定——build / 无 sorry 与公理白名单 / 内容概念禁提（禁止清单）/
+陈述层基底范围 / 判重 / 引文可溯源 / module 卫生。插件与 MCP 只是壳，grep 与临时脚本不是判据。
 
 ## 模块
 
@@ -41,7 +41,7 @@ export KL_PROFILE=<实例仓库>/knowledge/book-profile.json
 python -m kl.cli config               # 先确认配置解析对了（排障第一站）
 python -m kl.cli doctor               # 14 项体检
 python -m kl.cli sections             # 有哪些节的清单
-python -m kl.cli check 19 --with-dup  # 四判据 + 判重（不 --update 就只报不改）
+python -m kl.cli check 19 --with-dup  # 判据集（8 项）+ 判重（不 --update 就只报不改）
 python -m kl.cli graph                # 图 + 断言
 python -m kl.cli view                 # 生成 knowledge/pipeline/graph-view.html（交付物）
 ```

@@ -19,7 +19,7 @@
 
     config.py   运行期配置（KL_PROFILE → 书 id / 库名 / 路径；唯一配置来源）
     model.py    清单 schema 3（容忍未知键 ⟹ 加字段不会把旧清单读挂）
-    checks.py   四判据 + audit + 书目定位（唯一实现）
+    checks.py   判据集（8 个子判定）+ audit + 书目定位（唯一实现；意图见 docs/工程基准.md §4）
     figures.py  图的渲染与机械解码
     mcp.py      MCP 薄壳（LLM 用：一次调用 → 结构化 JSON）
     cli.py      命令行薄壳（人用 / 批处理）

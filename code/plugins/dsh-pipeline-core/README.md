@@ -16,12 +16,13 @@ book   = book-profile.json（书 id/标题、仓库、数据路径、文档、CL
 ## 装了它得到什么
 
 1. **系统提示段**（每次模型调用都注入，order=880）：
-   - `core 契约 v6`：判据清单（只有判据引擎一处实现）、每节五步、写证明的 LSP 内循环、
+   - `core 契约 v7`：判据集（8 个子判定，只有判据引擎一处实现；意图/数据源/「不抓什么」见
+     仓库 `docs/工程基准.md` §4）、每节五步、写证明的 LSP 内循环、
      协作与写作用域、debug 停止规则、收口标准 —— 全部与书无关；
    - 紧接着是【项目补充】：profile 里 `contract_extras` 指向的 markdown（本书的仓库/路径/
      本书特例/命令差异）。
 2. **`pipeline_gate(section)`**：一次调用跑完收口三连：
-   `link --check`（指针）→ `check --with-dup --update`（四判据 + ③b 判重，verdict 落盘）
+   `link --check`（指针）→ `check --with-dup --update`（判据集 + ③b 判重，verdict 落盘）
    → `audit`（清单↔声明双向覆盖 + 必填 + 页码）。返回结构 verdict + next。
 3. **`pipeline_doctor()`**：先校验 profile（字段 + 路径存在性，✗ 会指出字段名），
    再跑判据引擎的 doctor（聚合/探针/.ilean 同步/页码索引/基底候选/module 卫生/图数据）。
