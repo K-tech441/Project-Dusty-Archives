@@ -56,8 +56,12 @@ RULES: list[tuple[str, str, str]] = [
 ]
 for _plug in sorted(os.listdir(BUNDLES)) if os.path.isdir(BUNDLES) else []:
     _src = os.path.join(BUNDLES, _plug)
-    if os.path.isdir(_src):
-        RULES.append(("subset", _src, "code/plugins/" + _plug))
+    # 只同步「插件目录」：跳过 .git / node_modules 等，且必须带 package.json
+    if _plug.startswith(".") or not os.path.isdir(_src):
+        continue
+    if not os.path.isfile(os.path.join(_src, "package.json")):
+        continue
+    RULES.append(("subset", _src, "code/plugins/" + _plug))
 
 
 def _norm_bytes(path: str) -> bytes:
