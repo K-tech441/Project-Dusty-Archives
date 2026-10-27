@@ -443,6 +443,33 @@ verdict = 一次完整判据检查的**快照**，写在对应节的清单里（
 - 把「可及集」当「许可集」→ 以为 B 层能用的引理 A 层也能用；实际 ③a′ 会红；
 - 把「登记表」当自动生成 → 新增内容概念忘了写 `forbidden_so_far`；目前**无机械检查**（已知缺口）。
 
+### 4.3 概念登记的「三向咬合」（2026-10-27 补）
+
+§4.2 是「借用的边界」；这一节是「概念的登记」。三份登记必须互相认领，否则会出现**绿着漏**：
+
+| 登记 | 位置 | 管什么 |
+|---|---|---|
+| 概念清单 + 写序 | 入序表 `content[]` | 哪些概念要自造、依赖顺序（depends） |
+| 术语表 | `glossary.json` `concepts[]` | 概念 → 章节/原子/Lean 指针；**以及该概念在 mathlib 的实现名**（`mathlib_forbidden`） |
+| 禁区 | `基底.json` `forbidden_so_far` / `planned_forbidden` | 判据 ③a 的输入：整模块不许提及的 mathlib 名 |
+
+三条机械约束（`kl glossary check` = doctor 的「术语表」项）：
+
+```
+① concept.mathlib_forbidden ⊆ forbidden_so_far
+   （概念说「这是内容概念」，判据就必须真拦得住；列表为空时必须有 no_mathlib_name 理由）
+② forbidden_so_far 每个名字被某 concept 认领，或列在 planned_forbidden（防死条目）
+③ 入序表里 status=done:* 的 content 项必须被某 concept 的 order_items 认领（防整节写完、概念层没跟上）
+```
+
+**典型失效**（都是 2026-10-27 修掉的实例）：
+
+- 禁区里 `Frontier` / `Interior` 的**大小写与 mathlib 不符**（mathlib 是 `frontier` / `interior`）⟹ 判据按短名精确匹配，永远匹配不到（死条目）；
+- 两节写完了但 `concepts` 一条没补，而旧检查只要求「concepts 非空」⟹ 静默通过。
+
+**更新规则**：新增一个内容概念 ⟹ 同一次改动里三件事：入序表加 content 项 → glossary 加 concept
+（`mathlib_forbidden` / `no_mathlib_name` / `order_items`）→ mathlib 名不在禁区就补进 `forbidden_so_far`。
+
 ---
 
 ## 5. 一般化：从「一本书」到「换一本书」
@@ -545,6 +572,7 @@ core 与 book pack 之间只有一份契约：`book-profile.json`（路径/口�
 | 借入边界 | `Base.lean` 的 import 闭包：物理上看得见的 mathlib 模块（§4.2） |
 | 允许集 | `base_candidate.json`（反向传播生成）∪ `scope_extras` ∪ core：陈述层允许依赖的 mathlib 事实（§4.2） |
 | 基底登记表 | `基底.json`：借阅决策（borrowed）/ 禁区（forbidden）/ 手工例外（extras）（§4.2） |
+| 术语表 concepts | 跨节术语 + `mathlib_forbidden`（该概念在 mathlib 的实现名）/ `order_items`；与禁区、入序表三向咬合（§4.3） |
 | 基底 / 借用 | 泛称：从 mathlib 借来、不重证的事实集合；具体边界见上三行 |
 | 指针 | `(模块, 位置, 签名哈希)`，代替复制 Lean 源码 |
 | verified / partial / todo | 原子在 Lean 侧的状态：已证 / 部分证（带 witness） / 未开始 |

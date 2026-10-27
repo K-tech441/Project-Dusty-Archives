@@ -185,7 +185,7 @@ book pack 想改与判据相关的**参数**，只能改 §4.2 允许的参数�
 | 参数 | 位置 | 说明 |
 |---|---|---|
 | 基底候选 | `judge.base_candidate` | 由内容层反向传播生成；换书自动重算（三件套关系见 architecture §4.2） |
-| 禁提清单 / scope_extras | `judge.forbidden_list` | 本书要自造哪些概念、额外允许哪些（同上，§4.2） |
+| 禁提清单 / scope_extras | `judge.forbidden_list` | 本书要自造哪些概念、额外允许哪些（与 glossary concepts 双向咬合，见 architecture §4.2/§4.3） |
 | quote 页面范围 | 由 book config 派生 | 判据本身不变，范围来自书配置 |
 | 判重目标名 | `lean.lib` | 只影响范围参数，不改判重语义 |
 | 模块卫生根/聚合名 | `lean.lib` | 同上 |

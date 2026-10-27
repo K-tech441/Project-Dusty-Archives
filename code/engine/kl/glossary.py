@@ -8,7 +8,12 @@
 
 文件：`knowledge/glossary.json`（单一事实源）。`build` 从各节清单**自动生成** atom 条目
 （label → primary 声明），保留手写的 `concepts` 段（跨节术语，例如「标准拓扑」）。
-`check` 校验：清单/原子存在、Lean 声明存在、已完成的原子都被覆盖。
+`check` 校验：清单/原子存在、Lean 声明存在、已完成的原子都被覆盖；
+★ 2026-10-27 起还做**三份登记的咬合**（此前三处各写各的 ⟹ §12/§20 的 concepts 静默缺失、
+禁区里还有大小写写错的死条目）：
+  · 每条 concept 的 `mathlib_forbidden` ⊆ `基底.json.forbidden_so_far`（否则 ③a 拦不住）；
+  · `forbidden_so_far` 里每个名字都必须被某条 concept 认领，或列在 `planned_forbidden`；
+  · 入序表里 status=done:* 的 content 项必须被某条 concept 的 `order_items` 认领。
 
 用法：
     python -m kl.cli glossary build     # 从 section*.json 重建 atom/sections，保留 concepts
@@ -202,6 +207,63 @@ def check(root: str, declared: dict | None = None) -> dict:
     #    空 concepts 时入口什么都看不到 —— 而 doctor 仍报 ok，比"没表"更糟（假绿）。
     if not (doc.get("concepts") or []):
         problems.append("concepts 为空（glossary show 看不到任何术语；手工登记跨节术语）")
+
+    # 6) 三份登记咬合（2026-10-27）：concepts ↔ 基底.json 禁区 ↔ 入序表内容项
+    forbidden: set[str] = set()
+    planned: set[str] = set()
+    base_path = config.BASE_TABLE
+    if os.path.isfile(base_path):
+        try:
+            bt = json.load(open(base_path, encoding="utf-8"))
+            forbidden = set(bt.get("forbidden_so_far") or [])
+            planned = set((bt.get("planned_forbidden") or {}).keys())
+        except Exception as exc:  # noqa: BLE001
+            problems.append(f"读 {os.path.basename(base_path)} 失败：{exc}")
+    else:
+        problems.append("缺 knowledge/pipeline/基底.json（禁区映射判不了）")
+    order_ids: set[str] = set()
+    done_ids: set[str] = set()
+    order_path = config.ORDER_TABLE
+    if os.path.isfile(order_path):
+        try:
+            tab = json.load(open(order_path, encoding="utf-8"))
+            for it in tab.get("content") or []:
+                oid = str(it.get("id") or "")
+                if not oid:
+                    continue
+                order_ids.add(oid)
+                if str(it.get("status") or "").startswith("done:"):
+                    done_ids.add(oid)
+        except Exception as exc:  # noqa: BLE001
+            problems.append(f"读 {os.path.basename(order_path)} 失败：{exc}")
+    claimed: set[str] = set()
+    covered: set[str] = set()
+    for c in doc.get("concepts") or []:
+        term = c.get("term", "?")
+        mf = c.get("mathlib_forbidden")
+        if not isinstance(mf, list):
+            problems.append(f"concept {term}: 缺 mathlib_forbidden（无对应名时给 [] + no_mathlib_name）")
+            mf = []
+        for name in mf:
+            if name not in forbidden:
+                problems.append(f"concept {term}: mathlib_forbidden 的 {name} 不在 基底.json.forbidden_so_far（③a 拦不住）")
+            if name in planned:
+                problems.append(f"concept {term}: 认领了预登记名 {name}（planned_forbidden 不该被认领）")
+            claimed.add(name)
+        if not mf and not str(c.get("no_mathlib_name") or "").strip():
+            problems.append(f"concept {term}: mathlib_forbidden 为空但没写 no_mathlib_name 理由")
+        for oid in c.get("order_items") or []:
+            if oid not in order_ids:
+                problems.append(f"concept {term}: order_items 的 {oid} 不在入序表")
+            covered.add(oid)
+    orphans = sorted(forbidden - planned - claimed)
+    if orphans:
+        problems.append("基底禁区有未认领的名字：" + "、".join(orphans[:8])
+                        + "（补 concept 或移入 planned_forbidden）")
+    uncovered = sorted(done_ids - covered)
+    if uncovered:
+        problems.append("入序表 done 的内容项没有 concept 认领：" + "、".join(uncovered[:8]))
+
     n_atoms = len(doc.get("atoms") or [])
     detail = "ok" if not problems else "；".join(problems[:4])
     if not problems:
